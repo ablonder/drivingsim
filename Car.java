@@ -12,13 +12,13 @@ public class Car {
 	// If this is only being used in getAction, this may not need to be a class variable
 	roadSquare currentloc;
 	// location of the exit the car is trying to reach
-	static roadSquare goal;
+	final roadSquare goal;
 	// the car's speed - currently unchanging
-	static int speed;
+	final int speed;
 	// proportion of the time the car can tell if something is in its blind spot (between 0 and 1)
-	static float visibility;
+	final float visibility;
 	// a random number generator
-	static Random random;
+	final Random random;
 	
 	
 	/*
@@ -46,7 +46,7 @@ public class Car {
 	 * TODO - account for signaling
 	 * 
 	 * @param roadSquare newloc - the car's current location
-	 * @param ArrayList<roadSquare> neighbors - list of 8 neighboring roadSquares
+	 * @param ArrayList<roadSquare> neighbors - list of 8 neighboring roadSquares (clockwise starting with up-left)
 	 * 
 	 * @return int action - chosen action where 1 is left, -1 is right, and 0 is forward.
 	 */
@@ -59,7 +59,11 @@ public class Car {
 		currentloc = newloc;
 		
 		// TODO - move to accommodate traffic, otherwise move toward the goal exit
-		// if front left or right neighbors are signaling right or left respectively
+		// if front left or right neighbors are signaling right or left respectively, don't go straight
+		if(neighbors.get(2).signal == -1 || neighbors.get(4).signal == 1){
+			// check to see if there is a neighbor in the direction of the exit
+			
+		}
 		
 		// TODO - if either draw is less than visibility, check to see if there is a neighbor there
 		
