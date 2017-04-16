@@ -9,6 +9,7 @@ import java.util.Random;
 public class Car {
 	
 	// current location
+	// If this is only being used in getAction, this may not need to be a class variable
 	roadSquare currentloc;
 	// location of the exit the car is trying to reach
 	static roadSquare goal;
@@ -54,7 +55,11 @@ public class Car {
 		float ldraw = random.nextFloat();
 		float rdraw = random.nextFloat();
 		
+		// for now set currentloc to newloc
+		currentloc = newloc;
+		
 		// TODO - move to accommodate traffic, otherwise move toward the goal exit
+		// if front left or right neighbors are signaling right or left respectively
 		
 		// TODO - if either draw is less than visibility, check to see if there is a neighbor there
 		

@@ -15,16 +15,17 @@ public class roadSquare {
 	public final int x;				//x-coordinate of square, should never be changed
 	public final int y;				//y-coordinate of square, should never be changed
 	public boolean occupied;		//whether it's occupied by a car
+	// You may want to change occupied to a Car that is null when not occupied -Aviva
 	public final boolean exit;		//whether it's an exit, should never be changed
 	
 	/**
 	 * Constructor that sets class variables
 	 */
-	pulic roadSquare(int x, int y, boolean occupied, boolean exit) {
-		self.x = x;
-		self.y = y;
-		self.occupied = occupied;
-		self.exit = exit;
+	public roadSquare(int x, int y, boolean occupied, boolean exit) {
+		this.x = x;
+		this.y = y;
+		this.occupied = occupied;
+		this.exit = exit;
 	}
 	
 	/**
