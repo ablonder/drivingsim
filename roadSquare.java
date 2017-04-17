@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /**
  * This class represents each square on the grid on which the agents will act
  * 
@@ -65,7 +67,7 @@ public class roadSquare {
 	/**
 	 * Moves car out of roadSquare
 	 */
-	public void empy() {
+	public void empty() {
 		car = null;
 	}
 	
