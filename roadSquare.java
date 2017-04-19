@@ -59,6 +59,8 @@ public class roadSquare {
 		}
 		this.car = newCar;
 		if (exit==true) {
+			// We should probably remove cars when they reach their exit so that they don't crash into each other
+			// You may also want to check to see if this is the correct exit for that car
 			return "GOAL";
 		}
 		return "X";
