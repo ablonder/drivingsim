@@ -30,7 +30,7 @@
         add(grid);
       }
     
-//      public static void main(String[] args) {
-//      new DrawGrids("Draw Grids", 200, 200, 5, 100).setVisible(true);
-//      }
+      public static void main(String[] args) {
+      new DrawGrids("Draw Grids", 200, 200, 5, 100).setVisible(true);
+      }
     }
