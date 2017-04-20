@@ -57,12 +57,11 @@ public class roadSquare {
 			empty();			//removes both cars
 			return "CRASH";
 		}
-		this.car = newCar;
-		if (exit==true) {
-			// We should probably remove cars when they reach their exit so that they don't crash into each other
-			// You may also want to check to see if this is the correct exit for that car
+		if (exit==true && newCar.goal == this) {
+			// depending on how we want to run the simulation, we may want to enable cars to use an exit even if it is occupied by another car
 			return "GOAL";
 		}
+		this.car = newCar;
 		return "X";
 	}
 	
