@@ -22,16 +22,61 @@ public class World {
 	/*
 	 * Constructor that creates all roadSquares and randomly sets exits
 	 * 
-	 * You may want to include the number of rows and number of columns as parameters to make it more flexible
+	 * @param int numLanes
+	 * @param int numCols
 	 */
-	public World() {
-		// /* Creates the roadSquares, 5 lanes of 200 squares with null car */
-		// roadSquare current;
-		// for (int y=0; y<5; y++) {
-		// for (int x=0; x<200; x++) {
-		// current = new RoadSquare(x, y, null, )
-		// }
-		// }
+	public World(int numLanes, int numCols) {
+		
+		/* Adds the roadSquares to road */
+		roadSquare current;
+		for (int y=0; y<numLanes; y++) {
+			road.add(new ArrayList<roadSquare>());
+			for (int x=0; x<numCols; x++) {
+				/* func definition: roadSquare(int x, int y, Car car, boolean exit) */
+				/* Sets as not a car, and not an exit */
+				current = new roadSquare(x, y, null, false);
+				road.get(y).add(current);
+			}
+		}
+		
+		/* Sets each roadSquare's neighbors to list of 8 squares, and null if out of bounds 
+		 * Sets null for neighbors over the edge
+		 * Note that route is continuous, so neighbor of the far right column is the far left column.
+		 */
+		for (int y=0; y<numLanes; y++) {
+			for (int x=0; x<numCols; x++) {
+				ArrayList<roadSquare> neighbors = new ArrayList<roadSquare>();
+				current = road.get(y).get(x);
+				
+				if (y != numLanes-1) {		//if not on top lane
+					neighbors.add(road.get(y+1).get(x-1));		//top left
+					neighbors.add(road.get(y+1).get(x));		//top
+					neighbors.add(road.get(y+1).get(x+1));		//top right
+				}
+				else { neighbors.add(null); neighbors.add(null); neighbors.add(null); }
+				
+				if (x != numCols-1) {		//if not in far right
+					neighbors.add(road.get(y).get(x+1));		//right
+				}
+				else { 						//else add far left
+					neighbors.add(road.get(y).get(0)); }		
+				
+				if (y != 0) {			//if not on bottom lane
+					neighbors.add(road.get(y-1).get(x+1));		//bottom right
+					neighbors.add(road.get(y-1).get(x));		//bottom
+					neighbors.add(road.get(y-1).get(x-1));		//bottom left
+				}
+				else { neighbors.add(null); neighbors.add(null); neighbors.add(null); }
+				
+				if (x != 0) {			//if not in far left
+					neighbors.add(road.get(y).get(x-1));		//left
+				}
+				else { 					//else add far right
+					neighbors.add(road.get(y).get(numCols)); }
+				
+				current.setNeighbors(neighbors);
+			}
+		}
 	}
 	
 	/*

@@ -25,12 +25,20 @@ public class roadSquare {
 	/**
 	 * Constructor that sets class variables
 	 */
-	public roadSquare(int x, int y, Car car, boolean exit, ArrayList<roadSquare> neighbors) {
+	public roadSquare(int x, int y, Car car, boolean exit) {
 		this.x = x;
 		this.y = y;
 		this.car = car;
 		this.exit = exit;
 		this.signal = 0;
+	}
+
+	/**
+	 * Sets the array of neighbors from the World class
+	 * 
+	 * @param neighbors
+	 */
+	public void setNeighbors(ArrayList<roadSquare> neighbors) {
 		this.neighbors = neighbors;
 	}
 	
@@ -58,7 +66,7 @@ public class roadSquare {
 			return "CRASH";
 		}
 		if (exit==true && newCar.goal == this) {
-			// depending on how we want to run the simulation, we may want to enable cars to use an exit even if it is occupied by another car
+			empty();
 			return "GOAL";
 		}
 		this.car = newCar;
