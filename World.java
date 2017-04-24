@@ -17,6 +17,8 @@ public class World {
 	double carDensity = 0.3; // number of cars per 100 roadSquares
 	
 	int step = 0; // the number of ticks that have passed so far in the simulation for use in calculating speed
+	int crashes = 0; // the number of car crashes that have occurred
+	int goals = 0; // the number of cars that have reached their goal
 
 	/*
 	 * Constructor that creates all roadSquares and randomly sets exits
@@ -130,14 +132,20 @@ public class World {
 				if(square.car != null){
 					// store the signal in case it's time to move the car
 					int sig = square.changeSignal();
-					// check to see if it's time to move the car, and if so, move it accordingly
+					// check to see if it's time to move the car, and if so, move it accordingly and save the result
+					String result;
 					if(step%square.car.speed == 0){
 						if(sig == 0){
-							square.neighbors.get(3).occupy(square.car);
+							result = square.neighbors.get(3).occupy(square.car);
 						} else if(sig == -1) {
-							square.neighbors.get(5).occupy(square.car);
+							result = square.neighbors.get(5).occupy(square.car);
 						} else {
-							square.neighbors.get(1).occupy(square.car);
+							result = square.neighbors.get(1).occupy(square.car);
+						}
+						if(result.equals("GOAL")){
+							goals++;
+						} else if(result.equals("CRASH")){
+							crashes++;
 						}
 						square.empty();
 					}
@@ -159,6 +167,9 @@ public class World {
 		for(int t = 0; t < 1000; t++){
 			world.tick();
 		}
+		System.out.println("Step: " + world.step);
+		System.out.println("Crashes: " + world.crashes);
+		System.out.println("Goals: " + world.goals);
 	}
 
 }
