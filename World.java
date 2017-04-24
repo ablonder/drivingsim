@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import drawGrid.CellPane;
 
 /*
  * The World class, which runs the program including the roadSquares and the Cars
@@ -102,9 +103,11 @@ public class World {
 					// check to see if it's time to move the car, and if so, move it accordingly
 					if(step%square.car.speed == 0){
 						if(sig == 0){
-							lane.get(sq+1).occupy(square.car);
+							square.neighbors.get(3).occupy(square.car);
+						} else if(sig == -1) {
+							square.neighbors.get(5).occupy(square.car);
 						} else {
-							road.get(l-sig).get(sq).occupy(square.car);
+							square.neighbors.get(1).occupy(square.car);
 						}
 						square.empty();
 					}
