@@ -11,8 +11,8 @@ public class World {
 
 	int speedLimit = 70; // we can change as needed
 
-	ArrayList<ArrayList<roadSquare>> road = new ArrayList<ArrayList<roadSquare>>();
-	ArrayList<roadSquare> exits = new ArrayList<roadSquare>();
+	public ArrayList<ArrayList<roadSquare>> road = new ArrayList<ArrayList<roadSquare>>();
+	public ArrayList<roadSquare> exits = new ArrayList<roadSquare>();
 
 	ArrayList<Car> cars = new ArrayList<Car>();
 	double carDensity = 0.3; // number of cars per 100 roadSquares
