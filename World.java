@@ -47,31 +47,63 @@ public class World {
 				ArrayList<roadSquare> neighbors = new ArrayList<roadSquare>();
 				current = road.get(y).get(x);
 				
-				if (y != numLanes-1) {		//if not on top lane
-					neighbors.add(road.get(y+1).get(x-1));		//top left
+				/* Top neighbors */
+				if (y != numLanes - 1) {
+					if (x != 0) {
+						neighbors.add(road.get(y + 1).get(x - 1)); // top left
+					} else {
+						neighbors.add(road.get(y + 1).get(numCols - 1));
+					}
+
 					neighbors.add(road.get(y+1).get(x));		//top
-					neighbors.add(road.get(y+1).get(x+1));		//top right
+
+					if (x != numCols - 1) {
+						neighbors.add(road.get(y + 1).get(x + 1)); // top right
+					} else {
+						neighbors.add(road.get(y + 1).get(0));
+					}
 				}
 				else { neighbors.add(null); neighbors.add(null); neighbors.add(null); }
 				
+				/* Right neighbor */
 				if (x != numCols-1) {		//if not in far right
 					neighbors.add(road.get(y).get(x+1));		//right
 				}
 				else { 						//else add far left
-					neighbors.add(road.get(y).get(0)); }		
-				
-				if (y != 0) {			//if not on bottom lane
-					neighbors.add(road.get(y-1).get(x+1));		//bottom right
-					neighbors.add(road.get(y-1).get(x));		//bottom
-					neighbors.add(road.get(y-1).get(x-1));		//bottom left
+					neighbors.add(road.get(y).get(0));
 				}
-				else { neighbors.add(null); neighbors.add(null); neighbors.add(null); }
 				
+				/* Bottom Neighbors */
+				if (y != 0) {
+					if (x != numCols - 1) {
+						neighbors.add(road.get(y - 1).get(x + 1)); // bottom
+																	// right
+					} else {
+						neighbors.add(road.get(y - 1).get(0));
+					}
+
+					neighbors.add(road.get(y-1).get(x));		//bottom
+
+					if (x != 0) {
+						neighbors.add(road.get(y - 1).get(x - 1)); // bottom
+																	// left
+					} else {
+						neighbors.add(road.get(y - 1).get(numCols - 1));
+					}
+				}
+				else {
+					neighbors.add(null);
+					neighbors.add(null);
+					neighbors.add(null);
+				}
+				
+				/* Left neighbor */
 				if (x != 0) {			//if not in far left
 					neighbors.add(road.get(y).get(x-1));		//left
 				}
 				else { 					//else add far right
-					neighbors.add(road.get(y).get(numCols)); }
+					neighbors.add(road.get(y).get(numCols - 1));
+				}
 				
 				current.setNeighbors(neighbors);
 			}
