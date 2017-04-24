@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import drawGrid.CellPane;
 
 /*
  * The World class, which runs the program including the roadSquares and the Cars
@@ -18,7 +17,6 @@ public class World {
 	double carDensity = 0.3; // number of cars per 100 roadSquares
 	
 	int step = 0; // the number of ticks that have passed so far in the simulation for use in calculating speed
-
 
 	/*
 	 * Constructor that creates all roadSquares and randomly sets exits
