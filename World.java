@@ -79,6 +79,7 @@ public class World {
 		}
 	}
 	
+	
 	/*
 	 * A single tick in the simulation
 	 * 
@@ -109,6 +110,21 @@ public class World {
 					}
 				}
 			}
+		}
+	}
+	
+	
+	/**
+	 * Main method from which to run the simulation
+	 * 
+	 * @param args - list contianing the number of lanes, number of columns, and number of ticks to run
+	 * 
+	 * TODO - modify to use args instead of preset values
+	 */
+	public static void main(String[] args){
+		World world = new World(5, 100);
+		for(int t = 0; t < 1000; t++){
+			world.tick();
 		}
 	}
 
