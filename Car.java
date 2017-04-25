@@ -53,15 +53,15 @@ public class Car {
 		ArrayList<Integer> posdirs = new ArrayList<Integer>(Arrays.asList(-1, 0, 1));
 		
 		// check to see if there actually is a neighbor immediately to the left
-		if(neighbors.get(1).car != null){
+		if(neighbors.get(1) == null || neighbors.get(1).car != null){
 			posdirs.remove(Integer.valueOf(1));
 		}
 		// to the right
-		if(neighbors.get(5).car != null){
+		if(neighbors.get(5) == null || neighbors.get(5).car != null){
 			posdirs.remove(Integer.valueOf(-1));
 		}
 		// or ahead
-		if(neighbors.get(3).car != null){
+		if(neighbors.get(3) == null || neighbors.get(3).car != null){
 			posdirs.remove(Integer.valueOf(0));
 		}
 		
@@ -79,16 +79,18 @@ public class Car {
 		
 		// either way, now use the car's neighbors' signals to determine which way to move
 		// check behind to the left to see if a car is there and is not signaling
-		if(ldraw <= visibility && neighbors.get(0).car != null && neighbors.get(0).signal == 0){
+		if(neighbors.get(0) == null ||
+				(ldraw <= visibility && neighbors.get(0).car != null && neighbors.get(0).signal == 0)){
 			posdirs2.remove(Integer.valueOf(1));
 		}
 		// check behind to the right to see if a car is there and is not signaling
-		if(rdraw <= visibility && neighbors.get(6).car != null && neighbors.get(6).signal == 0){
+		if(neighbors.get(6) == null ||
+				(rdraw <= visibility && neighbors.get(6).car != null && neighbors.get(6).signal == 0)){
 			posdirs2.remove(Integer.valueOf(-1));
 		}
 		// check ahead to the right to see if a car is there and signaling left and ahead to the left to see if a car is there and signaling right
-		if((neighbors.get(2).car != null && neighbors.get(2).signal == -1) ||
-				(neighbors.get(4).car != null && neighbors.get(4).signal == 1)){
+		if((neighbors.get(2) != null && neighbors.get(2).car != null && neighbors.get(2).signal == -1) ||
+				(neighbors.get(4) != null && neighbors.get(4).car != null && neighbors.get(4).signal == 1)){
 			posdirs2.remove(Integer.valueOf(0));
 		}
 		
@@ -101,7 +103,20 @@ public class Car {
 			posdirs2 = posdirs;
 		}
 		
-		// now use the remaining actions to approach the desired exit
+		// lastly, remove all directions that don't exist one more time
+		if(neighbors.get(1) == null){
+			posdirs2.remove(Integer.valueOf(1));
+		}
+		if(neighbors.get(5) == null){
+			posdirs2.remove(Integer.valueOf(-1));
+		}
+		
+		// if there is only one action left, return that
+		if(posdirs2.size() == 1){
+			return posdirs2.get(0);
+		}
+		
+		// otherwise, use the remaining actions to approach the desired exit
 		// if the exit is farther away horizontally (down the road) than it is vertically (in lanes) prioritize going forward
 		if(goal.x - location.x > goal.y - location.y || location.x > goal.x){
 			// but only take an action if it is an option
