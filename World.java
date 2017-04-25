@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Random;
 
 /*
  * The World class, which runs the program including the roadSquares and the Cars
@@ -14,10 +15,17 @@ public class World {
 	public ArrayList<roadSquare> exits = new ArrayList<roadSquare>();
 
 	ArrayList<Car> cars = new ArrayList<Car>();
-	double carDensity = 0.3; // number of cars per 100 roadSquares
+	double carDensity = 0.3; // number of cars per 2 roadSquares
 	
-	int step = 0; // the number of ticks that have passed so far in the simulation for use in calculating speed
-
+	int step = 100; // the number of ticks that have passed so far in the
+					// simulation for use in calculating speed
+	int crashes = 0; // the number of car crashes that have occurred
+	int goals = 0; // the number of cars that have reached their goal
+	int numExits = 3; // the number of exit per side
+	public int numLanes;
+	public int numCols;
+	float vision = (float) .95; // the proportion of the time the car notices
+								// something in its blind spot
 
 	/*
 	 * Constructor that creates all roadSquares and randomly sets exits
@@ -27,6 +35,9 @@ public class World {
 	 */
 	public World(int numLanes, int numCols) {
 		
+		this.numLanes = numLanes;
+		this.numCols = numCols;
+
 		/* Adds the roadSquares to road */
 		roadSquare current;
 		for (int y=0; y<numLanes; y++) {
@@ -38,6 +49,21 @@ public class World {
 				road.get(y).add(current);
 			}
 		}
+		
+		/*
+		 * Sets goal squares based on class variable numExits Currently sets an
+		 * even number spaced equally on each side
+		 */
+		int t = numCols / numExits;
+		while (t < numCols) {
+			road.get(0).get(t).exit = true;
+			road.get(numLanes - 1).get(t).exit = true;
+			exits.add(road.get(0).get(t));
+			exits.add(road.get(numLanes - 1).get(t));
+			t += numCols / numExits;
+		}
+		
+		initializeCars();
 		
 		/* Sets each roadSquare's neighbors to list of 8 squares, and null if out of bounds 
 		 * Sets null for neighbors over the edge
@@ -111,6 +137,22 @@ public class World {
 		}
 	}
 	
+	/*
+	 * Adds cars to each lane in first column depending on carDensity
+	 */
+	private void initializeCars() {
+		Random rand = new Random();
+		float draw;
+		int exitDraw;
+		for (int lane = 0; lane < numLanes; lane++) {
+			draw = rand.nextFloat();
+			if (draw < carDensity) {
+				exitDraw = rand.nextInt(exits.size()); // random exit index
+				Car car = new Car(exits.get(exitDraw), speedLimit, vision, rand);
+				road.get(lane).get(0).car = car;
+			}
+		}
+	}
 	
 	/*
 	 * A single tick in the simulation
@@ -120,6 +162,9 @@ public class World {
 	public void tick(){
 		// increment step
 		step++;
+		// if (step % 2 == 0) { // initalizes new cars every other step
+		// initializeCars();
+		// }
 		// change the signal of every car in the simulation
 		for(int l = 0; l < road.size(); l++){
 			// grab this lane
@@ -131,14 +176,20 @@ public class World {
 				if(square.car != null){
 					// store the signal in case it's time to move the car
 					int sig = square.changeSignal();
-					// check to see if it's time to move the car, and if so, move it accordingly
+					// check to see if it's time to move the car, and if so, move it accordingly and save the result
+					String result;
 					if(step%square.car.speed == 0){
 						if(sig == 0){
-							square.neighbors.get(3).occupy(square.car);
+							result = square.neighbors.get(3).occupy(square.car);
 						} else if(sig == -1) {
-							square.neighbors.get(5).occupy(square.car);
+							result = square.neighbors.get(5).occupy(square.car);
 						} else {
-							square.neighbors.get(1).occupy(square.car);
+							result = square.neighbors.get(1).occupy(square.car);
+						}
+						if(result.equals("GOAL")){
+							goals++;
+						} else if(result.equals("CRASH")){
+							crashes++;
 						}
 						square.empty();
 					}
@@ -146,7 +197,6 @@ public class World {
 			}
 		}
 	}
-	
 	
 	/**
 	 * Main method from which to run the simulation
@@ -158,8 +208,12 @@ public class World {
 	public static void main(String[] args){
 		World world = new World(5, 100);
 		for(int t = 0; t < 1000; t++){
+			System.out.printf("t= %d\n", t);
 			world.tick();
 		}
+		System.out.println("Step: " + world.step);
+		System.out.println("Crashes: " + world.crashes);
+		System.out.println("Goals: " + world.goals);
 	}
 
 }
