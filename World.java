@@ -173,9 +173,10 @@ public class World {
 			}
 		// increment step
 		step++;
-		if (step % 2 == 0) { // initalizes new cars every other step
-			initializeCars();
-		}
+		
+		// creates a new list of cars to hold any changes made
+		ArrayList<Car> newcars = new ArrayList<Car>(cars);			
+		
 		// change the signal of every car in the simulation
 		for(Car car : cars){
 			// grab the car's location
@@ -183,7 +184,7 @@ public class World {
 			// store the signal in case it's time to move the car
 			int sig = square.changeSignal();
 			// check to see if it's time to move the car, and if so, move it accordingly and save the result
-			if(step%car.speed == 0){
+			if(step%car.speed == 0 && newcars.contains(car)){
 				roadSquare newsq;
 				if(sig == 0){
 					newsq = square.neighbors.get(3);
@@ -194,11 +195,11 @@ public class World {
 				}
 				String result = newsq.occupy(square.car);
 				if(result.equals("GOAL")){
-					cars.remove(car);
+					newcars.remove(car);
 					goals++;
 				} else if(result.equals("CRASH")){
-					cars.remove(car);
-					cars.remove(newsq.car);
+					newcars.remove(car);
+					newcars.remove(newsq.car);
 					newsq.empty();
 					crashes++;
 				}
@@ -206,6 +207,13 @@ public class World {
 				System.out.println("Empty");
 			}
 		}
+		// updates the list of cars to include modifications
+		cars = newcars;
+		
+		if (step % 2 == 0) { // initalizes new cars every other step
+			initializeCars();
+		}
+		
 		//				if(square.cell == null){System.out.println("Fuck");}
 		//				square.checkCar();
 		//				if(drawGrid.cellMatrix[square.y][square.x]==null){System.out.println("Double Fuck");}
