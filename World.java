@@ -194,7 +194,7 @@ public class World {
 						newsq = square.neighbors.get(3);
 					} else if(sig == 1){
 						newsq = square.neighbors.get(5);
-					} else if (sig == -1){
+					} else {
 						newsq = square.neighbors.get(1);
 					}
 					String result = newsq.occupy(car);
@@ -225,7 +225,7 @@ public class World {
 		//				if(square.cell == null){System.out.println("Fuck");}
 		//				square.checkCar();
 		//				if(drawGrid.cellMatrix[square.y][square.x]==null){System.out.println("Double Fuck");}
-		drawGrid screen.dispose();
+		screen.dispose();
 	}
 	
 	/**
