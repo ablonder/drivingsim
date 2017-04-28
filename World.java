@@ -151,7 +151,7 @@ public class World {
 			draw = rand.nextFloat();
 			if (draw < carDensity) {
 				exitDraw = rand.nextInt(exits.size()); // random exit index
-				Car car = new Car(exits.get(exitDraw), speedLimit, vision, rand);
+				Car car = new Car(road.get(lane).get(0), exits.get(exitDraw), speedLimit, vision, rand);
 				road.get(lane).get(0).car = car;
 				cars.add(car);
 			}
@@ -177,42 +177,38 @@ public class World {
 			initializeCars();
 		}
 		// change the signal of every car in the simulation
-		for(int l = 0; l < road.size(); l++){
-			// grab this lane
-			ArrayList<roadSquare> lane = road.get(l);
-			for(int sq = 0; sq < lane.size(); sq++){
-				// grab this square
-				roadSquare square = lane.get(sq);
-				// if there is a car in that square, change its signal
-				if(square.car != null){
-					// store the signal in case it's time to move the car
-					int sig = square.changeSignal();
-					// check to see if it's time to move the car, and if so, move it accordingly and save the result
-					String result;
-					if(square.car.moved == false && step%square.car.speed == 0){
-						// indicate that the car has been moved this round 
-						square.car.moved = true;
-						if(sig == 0){
-							result = square.neighbors.get(3).occupy(square.car);
-						} else if(sig == -1) {
-							result = square.neighbors.get(5).occupy(square.car);
-						} else {
-							result = square.neighbors.get(1).occupy(square.car);
-						}
-						if(result.equals("GOAL")){
-							goals++;
-						} else if(result.equals("CRASH")){
-							crashes++;
-						}
-						square.empty();
-						System.out.println("Empty");
-					}
+		for(Car car : cars){
+			// grab the car's location
+			roadSquare square = car.location;
+			// store the signal in case it's time to move the car
+			int sig = square.changeSignal();
+			// check to see if it's time to move the car, and if so, move it accordingly and save the result
+			if(step%car.speed == 0){
+				roadSquare newsq;
+				if(sig == 0){
+					newsq = square.neighbors.get(3);
+				} else if(sig == -1) {
+					newsq = square.neighbors.get(5);
+				} else {
+					newsq = square.neighbors.get(1);
 				}
-//				if(square.cell == null){System.out.println("Fuck");}
-//				square.checkCar();
-//				if(drawGrid.cellMatrix[square.y][square.x]==null){System.out.println("Double Fuck");}
+				String result = newsq.occupy(square.car);
+				if(result.equals("GOAL")){
+					cars.remove(car);
+					goals++;
+				} else if(result.equals("CRASH")){
+					cars.remove(car);
+					cars.remove(newsq.car);
+					newsq.empty();
+					crashes++;
+				}
+				square.empty();
+				System.out.println("Empty");
 			}
 		}
+		//				if(square.cell == null){System.out.println("Fuck");}
+		//				square.checkCar();
+		//				if(drawGrid.cellMatrix[square.y][square.x]==null){System.out.println("Double Fuck");}
 		new drawGrid();
 	}
 	
@@ -227,7 +223,7 @@ public class World {
 		new drawGrid();
 		
 		World world = new World(5, 100);
-		for(int t = 0; t < 1000; t++){
+		for(int t = 0; t < 100; t++){
 			System.out.printf("t= %d\n", t);
 			world.tick();
 		}
