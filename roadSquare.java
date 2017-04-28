@@ -85,11 +85,15 @@ public class roadSquare {
 	
 	public void checkCar() {
 		if(car != null){
+			System.out.println(y);
+			System.out.println(x);
     		drawGrid.cellMatrix[y][x].setBackground(Color.BLUE);
     		
     	}
     	
     	else if(car == null){
+    		System.out.println(y);
+			System.out.println(x);
     		drawGrid.cellMatrix[y][x].setBackground(Color.GRAY);
     	}
 

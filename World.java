@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 public class World {
 
-	int speedLimit = 70; // we can change as needed
+	int speedLimit = 1; // we can change as needed
 
 	public ArrayList<ArrayList<roadSquare>> road = new ArrayList<ArrayList<roadSquare>>();
 	
