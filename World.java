@@ -183,27 +183,36 @@ public class World {
 			roadSquare square = car.location;
 			// store the signal in case it's time to move the car
 			int sig = square.changeSignal();
+			// boolean to make sure double moves happen
+			boolean cont = true;
+			roadSquare newsq;
 			// check to see if it's time to move the car, and if so, move it accordingly and save the result
 			if(step%car.speed == 0 && newcars.contains(car)){
-				roadSquare newsq;
-				if(sig == 0){
-					newsq = square.neighbors.get(3);
-				} else if(sig == -1) {
-					newsq = square.neighbors.get(5);
-				} else {
-					newsq = square.neighbors.get(1);
+				while(cont){
+					if(sig == 0){
+						cont = false;
+						newsq = square.neighbors.get(3);
+					} else if(sig == 1){
+						newsq = square.neighbors.get(5);
+					} else if (sig == -1){
+						newsq = square.neighbors.get(1);
+					}
+					String result = newsq.occupy(car);
+					if(result.equals("GOAL")){
+						newcars.remove(car);
+						goals++;
+					} else if(result.equals("CRASH")){
+						newcars.remove(car);
+						newcars.remove(newsq.car);
+						newsq.empty();
+						crashes++;
+					}
+					square.empty();
+					// for the next run through, change sig to 0
+					sig = 0;
+					// and change square to the current square
+					square = newsq;
 				}
-				String result = newsq.occupy(square.car);
-				if(result.equals("GOAL")){
-					newcars.remove(car);
-					goals++;
-				} else if(result.equals("CRASH")){
-					newcars.remove(car);
-					newcars.remove(newsq.car);
-					newsq.empty();
-					crashes++;
-				}
-				square.empty();
 			}
 		}
 		// updates the list of cars to include modifications
@@ -216,7 +225,7 @@ public class World {
 		//				if(square.cell == null){System.out.println("Fuck");}
 		//				square.checkCar();
 		//				if(drawGrid.cellMatrix[square.y][square.x]==null){System.out.println("Double Fuck");}
-		screen.dispose();
+		drawGrid screen.dispose();
 	}
 	
 	/**
@@ -227,7 +236,7 @@ public class World {
 	 * TODO - modify to use args instead of preset values
 	 */
 	public static void main(String[] args){
-		screen = new drawGrid(5, 100);
+		drawGrid screen = new drawGrid(5, 100);
 		
 		World world = new World(5, 100);
 		for(int t = 0; t < 1000; t++){
