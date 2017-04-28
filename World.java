@@ -1,5 +1,8 @@
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
+
 
 /*
  * The World class, which runs the program including the roadSquares and the Cars
@@ -12,6 +15,8 @@ public class World {
 	int speedLimit = 70; // we can change as needed
 
 	public ArrayList<ArrayList<roadSquare>> road = new ArrayList<ArrayList<roadSquare>>();
+	
+
 	public ArrayList<roadSquare> exits = new ArrayList<roadSquare>();
 
 	ArrayList<Car> cars = new ArrayList<Car>();
@@ -45,7 +50,7 @@ public class World {
 			for (int x=0; x<numCols; x++) {
 				/* func definition: roadSquare(int x, int y, Car car, boolean exit) */
 				/* Sets as not a car, and not an exit */
-				current = new roadSquare(x, y, null, false);
+				current = new roadSquare(x, y, null, false, drawGrid.cellMatrix[y][x]);
 				road.get(y).add(current);
 			}
 		}
@@ -194,6 +199,9 @@ public class World {
 						square.empty();
 					}
 				}
+//				if(square.cell == null){System.out.println("Fuck");}
+				square.checkCar();
+				if(drawGrid.cellMatrix[square.y][square.x]==null){System.out.println("Double Fuck");}
 			}
 		}
 	}
@@ -206,6 +214,8 @@ public class World {
 	 * TODO - modify to use args instead of preset values
 	 */
 	public static void main(String[] args){
+		new drawGrid();
+		
 		World world = new World(5, 100);
 		for(int t = 0; t < 1000; t++){
 			System.out.printf("t= %d\n", t);
