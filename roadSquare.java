@@ -52,7 +52,7 @@ public class roadSquare {
 	 * @return int -1, 0, 1
 	 */
 	public int changeSignal() {
-		signal = car.getAction(this, neighbors);
+		signal = car.getAction(neighbors);
 		return signal;
 	}
 	
@@ -65,7 +65,6 @@ public class roadSquare {
 	 */
 	public String occupy(Car newCar) {
 		if (car != null) {
-			empty();			//removes both cars
 			return "CRASH";
 		}
 		if (exit==true && newCar.goal == this) {
@@ -73,6 +72,7 @@ public class roadSquare {
 			return "GOAL";
 		}
 		this.car = newCar;
+		this.car.location = this;
 		return "X";
 	}
 	
