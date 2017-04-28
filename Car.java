@@ -17,7 +17,8 @@ public class Car {
 	final float visibility;
 	// a random number generator
 	final Random random;
-	
+	// whether the car has been moved in this tick
+	boolean moved = false;
 	
 	/*
 	 * Constructor for a new car to initialize class variables

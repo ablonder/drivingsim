@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 public class World {
 
-	int speedLimit = 1; // we can change as needed
+	int speedLimit = 2; // we can change as needed
 
 	public static ArrayList<ArrayList<roadSquare>> road = new ArrayList<ArrayList<roadSquare>>();
 	
@@ -22,7 +22,7 @@ public class World {
 	ArrayList<Car> cars = new ArrayList<Car>();
 	double carDensity = 0.3; // number of cars per 2 roadSquares
 	
-	int step = 100; // the number of ticks that have passed so far in the
+	int step = 0; // the number of ticks that have passed so far in the
 					// simulation for use in calculating speed
 	int crashes = 0; // the number of car crashes that have occurred
 	int goals = 0; // the number of cars that have reached their goal
@@ -190,7 +190,9 @@ public class World {
 					int sig = square.changeSignal();
 					// check to see if it's time to move the car, and if so, move it accordingly and save the result
 					String result;
-					if(step%square.car.speed == 0){
+					if(square.car.moved == false && step%square.car.speed == 0){
+						// indicate that the car has been moved this round 
+						square.car.moved = true;
 						if(sig == 0){
 							result = square.neighbors.get(3).occupy(square.car);
 						} else if(sig == -1) {
