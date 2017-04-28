@@ -81,19 +81,21 @@ public class DrawGrids {
 
         private Color defaultBackground;
 
-        public CellPane() {
-            addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseEntered(MouseEvent e) {
-                    defaultBackground = getBackground();
-                    setBackground(Color.BLUE);
-                }
+        public CellPane(Car car) {
+        	
+     
+//            addMouseListener(new MouseAdapter() {
+//                @Override
+//                public void mouseEntered(MouseEvent e) {
+//                    defaultBackground = getBackground();
+//                    setBackground(Color.BLUE);
+//                }
 
 //                @Override
 //                public void mouseExited(MouseEvent e) {
 //                    setBackground(defaultBackground);
 //                }
-            });
+//            });
         }
 
         @Override
