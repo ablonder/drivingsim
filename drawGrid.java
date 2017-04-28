@@ -4,8 +4,6 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
@@ -13,13 +11,15 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.Border;
 import javax.swing.border.MatteBorder;
 
+
 public class drawGrid {
 
-    public static void main(String[] args) {
-        new drawGrid();
-        
-    }
-
+//    public static void main(String[] args) {
+//        new drawGrid();
+//        
+//    }
+	public static CellPane cellMatrix[][] = new CellPane[5][100];
+	
     public drawGrid() {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -44,7 +44,6 @@ public class drawGrid {
         public TestPane() {
             setLayout(new GridBagLayout());
             
-            CellPane road[][] = new CellPane[5][100];
             
             GridBagConstraints gbc = new GridBagConstraints();
             for (int row = 0; row < 5; row++) {
@@ -69,11 +68,11 @@ public class drawGrid {
                     }
                     cellPane.setBorder(border);
                     add(cellPane, gbc);
-                    road[row][col] = cellPane;
+                    cellMatrix[row][col] = cellPane;
+                    
+//                    World.road.get(row).get(col).cell = cellPane;
                 }
             }
-
-            road[0][1].setBackground(Color.BLUE);
         }
     }
 
@@ -82,18 +81,19 @@ public class drawGrid {
         private Color defaultBackground;
 
         public CellPane() {
-            addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseEntered(MouseEvent e) {
-                    defaultBackground = getBackground();
-                    setBackground(Color.BLUE);
-                }
+
+//            addMouseListener(new MouseAdapter() {
+//                @Override
+//                public void mouseEntered(MouseEvent e) {
+//                    defaultBackground = getBackground();
+//                    setBackground(Color.BLUE);
+//                }
 
 //                @Override
 //                public void mouseExited(MouseEvent e) {
 //                    setBackground(defaultBackground);
 //                }
-            });
+//            });
         }
 
         @Override
