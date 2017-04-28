@@ -174,9 +174,9 @@ public class World {
 			}
 		// increment step
 		step++;
-		// if (step % 2 == 0) { // initalizes new cars every other step
-		// initializeCars();
-		// }
+		if (step % 2 == 0) { // initalizes new cars every other step
+			initializeCars();
+		}
 		// change the signal of every car in the simulation
 		for(int l = 0; l < road.size(); l++){
 			// grab this lane
