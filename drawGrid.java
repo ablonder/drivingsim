@@ -39,9 +39,11 @@ public class drawGrid {
         });
     }
 
-    public class TestPane extends JPanel {
+    public static class TestPane extends JPanel {
 
         public TestPane() {
+            Color defaultBackground;
+
             setLayout(new GridBagLayout());
             
             
@@ -68,17 +70,25 @@ public class drawGrid {
                     }
                     cellPane.setBorder(border);
                     add(cellPane, gbc);
+                    defaultBackground = cellPane.getBackground();
                     cellMatrix[row][col] = cellPane;
-                    
+//                    cellMatrix[row][col].setBackground(Color.BLUE);
+                    if(World.road.get(row).get(col).car != null){
+                    	System.out.println("Doop");
+                    	
+                    	cellPane.setBackground(Color.BLUE);                 
+                    }
+                    else{
+                    	cellPane.setBackground(defaultBackground);
+                    }
 //                    World.road.get(row).get(col).cell = cellPane;
                 }
             }
         }
     }
 
-    public class CellPane extends JPanel {
+    public static class CellPane extends JPanel {
 
-        private Color defaultBackground;
 
         public CellPane() {
 

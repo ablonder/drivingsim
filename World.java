@@ -14,7 +14,7 @@ public class World {
 
 	int speedLimit = 1; // we can change as needed
 
-	public ArrayList<ArrayList<roadSquare>> road = new ArrayList<ArrayList<roadSquare>>();
+	public static ArrayList<ArrayList<roadSquare>> road = new ArrayList<ArrayList<roadSquare>>();
 	
 
 	public ArrayList<roadSquare> exits = new ArrayList<roadSquare>();
@@ -165,6 +165,13 @@ public class World {
 	 * We'll have to integrate the GUI in here
 	 */
 	public void tick(){
+		try{
+			//print something here
+			Thread.sleep(1000); //sleep for 3 seconds
+			//print something else here
+			}
+			catch(InterruptedException e){    System.out.println("got interrupted!");
+			}
 		// increment step
 		step++;
 		if (step % 2 == 0) { // initalizes new cars every other step
@@ -197,19 +204,21 @@ public class World {
 							crashes++;
 						}
 						square.empty();
+						System.out.println("Empty");
 					}
 				}
 //				if(square.cell == null){System.out.println("Fuck");}
-				square.checkCar();
-				if(drawGrid.cellMatrix[square.y][square.x]==null){System.out.println("Double Fuck");}
+//				square.checkCar();
+//				if(drawGrid.cellMatrix[square.y][square.x]==null){System.out.println("Double Fuck");}
 			}
 		}
+		new drawGrid();
 	}
 	
 	/**
 	 * Main method from which to run the simulation
 	 * 
-	 * @param args - list contianing the number of lanes, number of columns, and number of ticks to run
+	 * @param args - list containing the number of lanes, number of columns, and number of ticks to run
 	 * 
 	 * TODO - modify to use args instead of preset values
 	 */
