@@ -14,6 +14,9 @@ import javax.swing.border.MatteBorder;
 
 
 public class drawGrid {
+	
+	public static JFrame frame;
+	public static TestPane pane;
 
 //    public static void main(String[] args) {
 //        new drawGrid();
@@ -29,10 +32,11 @@ public class drawGrid {
                 } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
                 }
 
-                JFrame frame = new JFrame("Route 364");
+                frame = new JFrame("Route 364");
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.setLayout(new BorderLayout());
-                frame.add(new TestPane());
+                pane = new TestPane();
+                frame.add(pane);
                 frame.pack();
                 frame.setLocationRelativeTo(null);
                 frame.setVisible(true);
@@ -84,6 +88,14 @@ public class drawGrid {
                 }
             }
         }
+    }
+    
+    public void dispose() {
+        frame.remove(pane);
+        pane = new TestPane();
+        frame.add(pane);
+        frame.revalidate();
+        frame.repaint();
     }
 
     public static class CellPane extends JPanel {

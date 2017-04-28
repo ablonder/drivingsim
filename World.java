@@ -13,7 +13,7 @@ public class World {
 	int speedLimit = 2; // we can change as needed
 
 	public static ArrayList<ArrayList<roadSquare>> road = new ArrayList<ArrayList<roadSquare>>();
-	
+	public static drawGrid screen;
 
 	public ArrayList<roadSquare> exits = new ArrayList<roadSquare>();
 
@@ -217,7 +217,7 @@ public class World {
 		//				if(square.cell == null){System.out.println("Fuck");}
 		//				square.checkCar();
 		//				if(drawGrid.cellMatrix[square.y][square.x]==null){System.out.println("Double Fuck");}
-		new drawGrid();
+		screen.dispose();
 	}
 	
 	/**
@@ -228,7 +228,7 @@ public class World {
 	 * TODO - modify to use args instead of preset values
 	 */
 	public static void main(String[] args){
-		new drawGrid();
+		screen = new drawGrid();
 		
 		World world = new World(5, 100);
 		for(int t = 0; t < 100; t++){
