@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
@@ -13,6 +14,9 @@ import javax.swing.border.MatteBorder;
 
 
 public class drawGrid {
+	
+	public static JFrame frame;
+	public static TestPane pane;
 
 //    public static void main(String[] args) {
 //        new drawGrid();
@@ -30,10 +34,11 @@ public class drawGrid {
                 } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
                 }
 
-                JFrame frame = new JFrame("Route 364");
+                frame = new JFrame("Route 364");
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.setLayout(new BorderLayout());
-                frame.add(new TestPane());
+                pane = new TestPane();
+                frame.add(pane);
                 frame.pack();
                 frame.setLocationRelativeTo(null);
                 frame.setVisible(true);
@@ -76,8 +81,6 @@ public class drawGrid {
                     cellMatrix[row][col] = cellPane;
 //                    cellMatrix[row][col].setBackground(Color.BLUE);
                     if(World.road.get(row).get(col).car != null){
-                    	System.out.println("Doop");
-                    	
                     	cellPane.setBackground(Color.BLUE);                 
                     }
                     else{
@@ -87,6 +90,14 @@ public class drawGrid {
                 }
             }
         }
+    }
+    
+    public void dispose() {
+        frame.remove(pane);
+        pane = new TestPane();
+        frame.add(pane);
+        frame.revalidate();
+        frame.repaint();
     }
 
     public static class CellPane extends JPanel {
