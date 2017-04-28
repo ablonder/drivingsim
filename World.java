@@ -204,7 +204,6 @@ public class World {
 					crashes++;
 				}
 				square.empty();
-				System.out.println("Empty");
 			}
 		}
 		// updates the list of cars to include modifications
@@ -217,7 +216,7 @@ public class World {
 		//				if(square.cell == null){System.out.println("Fuck");}
 		//				square.checkCar();
 		//				if(drawGrid.cellMatrix[square.y][square.x]==null){System.out.println("Double Fuck");}
-		new drawGrid();
+		new drawGrid(numLanes, numCols);
 	}
 	
 	/**
@@ -228,10 +227,10 @@ public class World {
 	 * TODO - modify to use args instead of preset values
 	 */
 	public static void main(String[] args){
-		new drawGrid();
+		new drawGrid(5, 100);
 		
 		World world = new World(5, 100);
-		for(int t = 0; t < 100; t++){
+		for(int t = 0; t < 1000; t++){
 			System.out.printf("t= %d\n", t);
 			world.tick();
 		}

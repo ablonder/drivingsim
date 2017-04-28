@@ -18,9 +18,11 @@ public class drawGrid {
 //        new drawGrid();
 //        
 //    }
-	public static CellPane cellMatrix[][] = new CellPane[5][100];
+	public static CellPane[][] cellMatrix;
 	
-    public drawGrid() {
+    public drawGrid(int numLanes, int numCols) {
+    	// create a new cellPane matrix for cellMatrix
+    	cellMatrix = new CellPane[numLanes][numCols];
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
