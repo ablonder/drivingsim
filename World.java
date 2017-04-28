@@ -1,7 +1,5 @@
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 
 /*
@@ -155,6 +153,7 @@ public class World {
 				exitDraw = rand.nextInt(exits.size()); // random exit index
 				Car car = new Car(exits.get(exitDraw), speedLimit, vision, rand);
 				road.get(lane).get(0).car = car;
+				cars.add(car);
 			}
 		}
 	}
