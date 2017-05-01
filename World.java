@@ -14,6 +14,7 @@ public class World {
 
 	public static ArrayList<ArrayList<roadSquare>> road = new ArrayList<ArrayList<roadSquare>>();
 	public static drawGrid screen;
+	public int frameRate = 250; // rate it changes in milliseconds
 
 	public ArrayList<roadSquare> exits = new ArrayList<roadSquare>();
 
@@ -166,7 +167,7 @@ public class World {
 	public void tick(){
 		try{
 			//print something here
-			Thread.sleep(1000); //sleep for 3 seconds
+			Thread.sleep(frameRate); // sleep for 3 seconds
 			//print something else here
 			}
 			catch(InterruptedException e){    System.out.println("got interrupted!");
