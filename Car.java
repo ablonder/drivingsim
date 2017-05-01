@@ -54,12 +54,14 @@ public class Car {
 		// list of possible directions to be removed as directions are noted as occupied
 		ArrayList<Integer> posdirs = new ArrayList<Integer>(Arrays.asList(-1, 0, 1));
 		
-		// check to see if there actually is a neighbor immediately to the left
-		if(neighbors.get(1) == null || neighbors.get(1).car != null){
+		// check to see if there actually are any neighbors to the left
+		if(neighbors.get(2) == null || neighbors.get(2).car != null || neighbors.get(1) == null ||
+				neighbors.get(1).car != null){
 			posdirs.remove(Integer.valueOf(1));
 		}
 		// to the right
-		if(neighbors.get(5) == null || neighbors.get(5).car != null){
+		if(neighbors.get(4) == null || neighbors.get(4).car != null || neighbors.get(5) == null ||
+				neighbors.get(5).car != null){
 			posdirs.remove(Integer.valueOf(-1));
 		}
 		// or ahead
@@ -80,7 +82,7 @@ public class Car {
 		posdirs2 = new ArrayList<Integer>(posdirs);
 		
 		// either way, now use the car's neighbors' signals to determine which way to move
-		// check behind to the left to see if a car is there and is not signaling
+		// check just to the left to see if a car is there and is not signaling
 		if(neighbors.get(0) == null ||
 				(ldraw <= visibility && neighbors.get(0).car != null && neighbors.get(0).signal == 0)){
 			posdirs2.remove(Integer.valueOf(1));
