@@ -55,36 +55,57 @@ public class drawGrid {
             
             
             GridBagConstraints gbc = new GridBagConstraints();
-            for (int row = 0; row < 5; row++) {
+            for (int row = 0; row < 7; row++) {
                 for (int col = 0; col < 100; col++) {
                     gbc.gridx = col;
                     gbc.gridy = row;
 
                     CellPane cellPane = new CellPane();
                     Border border = null;
-                    if (row < 4) {
+                    
+                    
+                    if (row < 5 && row>0) {
+//                    	if(row == 0){
+//                    
+//                    	}
                         if (col < 99) {
                             border = new MatteBorder(1, 1, 0, 0, Color.GRAY);
                         } else {
                             border = new MatteBorder(1, 1, 0, 1, Color.GRAY);
                         }
-                    } else {
+                    } 
+                    else if(row == 5) {
                         if (col < 99) {
                             border = new MatteBorder(1, 1, 1, 0, Color.GRAY);
                         } else {
                             border = new MatteBorder(1, 1, 1, 1, Color.GRAY);
                         }
                     }
+                    
+                    else{
+                    	if(col == 33 | col == 66 | col == 99){
+                    		border = new MatteBorder(1, 1, 1, 1, Color.GREEN);
+                    		
+                    	}
+                    }
                     cellPane.setBorder(border);
                     add(cellPane, gbc);
-                    defaultBackground = cellPane.getBackground();
-                    cellMatrix[row][col] = cellPane;
-//                    cellMatrix[row][col].setBackground(Color.BLUE);
-                    if(World.road.get(row).get(col).car != null){
-                    	cellPane.setBackground(Color.BLUE);                 
+                    
+                    if(row != 0 && row != 6){
+	                    defaultBackground = cellPane.getBackground();
+	                    cellMatrix[row-1][col] = cellPane;
+//                      cellMatrix[row][col].setBackground(Color.BLUE);
+	                    if(World.road.get(row-1).get(col).car != null){
+	                    	cellPane.setBackground(Color.BLUE);                 
                     }
+	                  
                     else{
                     	cellPane.setBackground(defaultBackground);
+                    }
+                    }
+                    
+                    else if(col == 33 | col == 66 | col == 99){
+                    	cellPane.setBackground(Color.GREEN);
                     }
 //                    World.road.get(row).get(col).cell = cellPane;
                 }
