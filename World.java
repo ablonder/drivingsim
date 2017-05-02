@@ -14,7 +14,7 @@ public class World {
 
 	public static ArrayList<ArrayList<roadSquare>> road = new ArrayList<ArrayList<roadSquare>>();
 	public static drawGrid screen;
-	public int frameRate = 100; // rate it changes in milliseconds
+	public int frameRate = 180; // rate it changes in milliseconds
 
 	public ArrayList<roadSquare> exits = new ArrayList<roadSquare>();
 
