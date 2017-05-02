@@ -121,8 +121,8 @@ public class Car {
 		}
 		
 		// otherwise, use the remaining actions to approach the desired exit
-		// if the exit is farther away horizontally (down the road) than it is vertically (in lanes) prioritize going forward
-		if(goal.x - location.x > goal.y - location.y || location.x > goal.x){
+		// if they are in the same lane as their goal, prioritize going forward
+		if(location.y == goal.y){
 			// but only take an action if it is an option
 			if(posdirs2.contains(0)){
 				return 0;
