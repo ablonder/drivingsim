@@ -14,7 +14,7 @@ public class World {
 
 	public static ArrayList<ArrayList<roadSquare>> road = new ArrayList<ArrayList<roadSquare>>();
 	public static drawGrid screen;
-	public int frameRate = 250; // rate it changes in milliseconds
+	public int frameRate = 400; // rate it changes in milliseconds
 
 	public ArrayList<roadSquare> exits = new ArrayList<roadSquare>();
 
@@ -244,7 +244,7 @@ public class World {
 	 */
 	public static void main(String[] args){
 		World world = new World(5, 100);
-		for(int t = 0; t < 1000; t++){
+		for (int t = 0; t < 400; t++) {
 			System.out.printf("t= %d\n", t);
 			world.tick();
 		}

@@ -140,7 +140,7 @@ public class Car {
 				return -1;
 			}
 			// and if that fails, just go forward (unless that would make the car pass its exit)
-			if(goal.y == location.y){
+			if(goal.x == location.x){
 				if(posdirs2.contains(1)){
 					return 1;
 				}
