@@ -10,16 +10,18 @@ import java.util.Random;
 
 public class World {
 
-	int speedLimit = 1; // we can change as needed
+	int speedLimit = 5; // minimum speed, cars will travel anywhere from 1 to
+						// speedLimit
+	static int numRuns = 200;
 
 	public static ArrayList<ArrayList<roadSquare>> road = new ArrayList<ArrayList<roadSquare>>();
 	public static drawGrid screen;
-	public int frameRate = 180; // rate it changes in milliseconds
+	public int frameRate = 300; // rate it changes in milliseconds
 
 	public ArrayList<roadSquare> exits = new ArrayList<roadSquare>();
 
 	ArrayList<Car> cars = new ArrayList<Car>();
-	double carDensity = 0.3; // number of cars per 2 roadSquares
+	double carDensity = 0.1; // number of cars per 2 roadSquares
 	
 	int step = 0; // the number of ticks that have passed so far in the
 					// simulation for use in calculating speed
@@ -156,7 +158,8 @@ public class World {
 			} // if car already, continue
 			if (draw < carDensity) {
 				exitDraw = rand.nextInt(exits.size()); // random exit index
-				Car car = new Car(road.get(lane).get(0), exits.get(exitDraw), speedLimit, vision, rand);
+				int speed = rand.nextInt(speedLimit) + 1;
+				Car car = new Car(road.get(lane).get(0), exits.get(exitDraw), speed, vision, rand);
 				road.get(lane).get(0).car = car;
 				cars.add(car);
 			}
@@ -244,7 +247,7 @@ public class World {
 	 */
 	public static void main(String[] args){
 		World world = new World(5, 100);
-		for (int t = 0; t < 400; t++) {
+		for (int t = 0; t < numRuns; t++) {
 			System.out.printf("t= %d\n", t);
 			world.tick();
 		}
