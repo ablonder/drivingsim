@@ -150,6 +150,9 @@ public class World {
 		int exitDraw;
 		for (int lane = 0; lane < numLanes; lane++) {
 			draw = rand.nextFloat();
+			if (road.get(lane).get(0).car != null) {
+				continue;
+			} // if car already, continue
 			if (draw < carDensity) {
 				exitDraw = rand.nextInt(exits.size()); // random exit index
 				Car car = new Car(road.get(lane).get(0), exits.get(exitDraw), speedLimit, vision, rand);
