@@ -52,6 +52,7 @@ public class roadSquare {
 	 * @return int -1, 0, 1
 	 */
 	public int changeSignal() {
+		// car is null sometimes, not sure why
 		signal = car.getAction(neighbors);
 		return signal;
 	}

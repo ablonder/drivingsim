@@ -10,7 +10,7 @@ import java.util.Random;
 
 public class World {
 
-	int speedLimit = 2; // we can change as needed
+	int speedLimit = 1; // we can change as needed
 
 	public static ArrayList<ArrayList<roadSquare>> road = new ArrayList<ArrayList<roadSquare>>();
 	public static drawGrid screen;
@@ -37,7 +37,8 @@ public class World {
 	 * @param int numCols
 	 */
 	public World(int numLanes, int numCols) {
-		
+		// create the screen
+		screen = new drawGrid(numLanes, numCols);
 		this.numLanes = numLanes;
 		this.numCols = numCols;
 
@@ -187,21 +188,23 @@ public class World {
 			boolean cont = true;
 			roadSquare newsq;
 			// check to see if it's time to move the car, and if so, move it accordingly and save the result
-			if(step%car.speed == 0 && newcars.contains(car)){
-				while(cont){
+			if(step%car.speed == 0){
+				while(cont && newcars.contains(car)){
 					if(sig == 0){
 						cont = false;
 						newsq = square.neighbors.get(3);
 					} else if(sig == 1){
-						newsq = square.neighbors.get(5);
-					} else {
 						newsq = square.neighbors.get(1);
+					} else {
+						newsq = square.neighbors.get(5);
 					}
 					String result = newsq.occupy(car);
 					if(result.equals("GOAL")){
+						cont = false;
 						newcars.remove(car);
 						goals++;
 					} else if(result.equals("CRASH")){
+						cont = false;
 						newcars.remove(car);
 						newcars.remove(newsq.car);
 						newsq.empty();
@@ -236,8 +239,6 @@ public class World {
 	 * TODO - modify to use args instead of preset values
 	 */
 	public static void main(String[] args){
-		drawGrid screen = new drawGrid(5, 100);
-		
 		World world = new World(5, 100);
 		for(int t = 0; t < 1000; t++){
 			System.out.printf("t= %d\n", t);
