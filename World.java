@@ -244,7 +244,7 @@ public class World {
 	 */
 	public static void main(String[] args){
 		World world = new World(5, 100);
-		for (int t = 0; t < 400; t++) {
+		for (int t = 0; t < 200; t++) {
 			System.out.printf("t= %d\n", t);
 			world.tick();
 		}
