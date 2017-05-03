@@ -25,13 +25,14 @@ public class World {
 	
 	int step = 0; // the number of ticks that have passed so far in the
 					// simulation for use in calculating speed
-	int crashes = 0; // the number of car crashes that have occurred
+	int crashcount = 0; // the number of car crashes that have occurred
 	int goals = 0; // the number of cars that have reached their goal
 	int numExits = 3; // the number of exit per side
 	public int numLanes;
 	public int numCols;
 	float vision = (float) .95; // the proportion of the time the car notices
 								// something in its blind spot
+	public ArrayList<roadSquare> crashes; // list of crashes that have occured in the last tick
 
 	/*
 	 * Constructor that creates all roadSquares and randomly sets exits
@@ -183,7 +184,10 @@ public class World {
 		step++;
 		
 		// creates a new list of cars to hold any changes made
-		ArrayList<Car> newcars = new ArrayList<Car>(cars);			
+		ArrayList<Car> newcars = new ArrayList<Car>(cars);
+		
+		// list of roadSquares that have had crashes this tick
+		crashes = new ArrayList<roadSquare>();
 		
 		// change the signal of every car in the simulation
 		for(Car car : cars){
@@ -217,7 +221,8 @@ public class World {
 							newcars.remove(car);
 							newcars.remove(newsq.car);
 							newsq.empty();
-							crashes++;
+							crashes.add(newsq);
+							crashcount++;
 						}
 						square.empty();
 						// for the next run through, change sig to 0
@@ -255,7 +260,7 @@ public class World {
 			world.tick();
 		}
 		System.out.println("Step: " + world.step);
-		System.out.println("Crashes: " + world.crashes);
+		System.out.println("Crashes: " + world.crashcount);
 		System.out.println("Goals: " + world.goals);
 	}
 
