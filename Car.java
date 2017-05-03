@@ -119,7 +119,6 @@ public class Car {
 		if(posdirs2.size() == 1){
 			return posdirs2.get(0);
 		}
-		
 		// otherwise, use the remaining actions to approach the desired exit
 		// if they are in the same lane as their goal, prioritize going forward
 		if(location.y == goal.y){
@@ -136,16 +135,10 @@ public class Car {
 			// otherwise prioritize changing lanes
 			if(goal.y == 4 && posdirs2.contains(1)){
 				return 1;
-			} else if(goal.y == 1 && posdirs2.contains(-1)){
+			} else if(goal.y == 0 && posdirs2.contains(-1)){
 				return -1;
 			}
-			// and if that fails, just go forward (unless that would make the car pass its exit)
-			if(goal.x == location.x){
-				if(posdirs2.contains(1)){
-					return 1;
-				}
-				return -1;
-			}
+			// and if that fails, just go forward
 			return 0;
 		}
 		

@@ -10,7 +10,9 @@ import java.util.Random;
 
 public class World {
 
-	int speedLimit = 1; // we can change as needed
+	int speedLimit = 5; // minimum speed, cars will travel anywhere from 1 to
+						// speedLimit
+	static int numRuns = 200;
 
 	public static ArrayList<ArrayList<roadSquare>> road = new ArrayList<ArrayList<roadSquare>>();
 	public static drawGrid screen;
@@ -19,7 +21,7 @@ public class World {
 	public ArrayList<roadSquare> exits = new ArrayList<roadSquare>();
 
 	ArrayList<Car> cars = new ArrayList<Car>();
-	double carDensity = 0.3; // number of cars per 2 roadSquares
+	double carDensity = 0.1; // number of cars per 2 roadSquares
 	
 	int step = 0; // the number of ticks that have passed so far in the
 					// simulation for use in calculating speed
@@ -156,7 +158,8 @@ public class World {
 			} // if car already, continue
 			if (draw < carDensity) {
 				exitDraw = rand.nextInt(exits.size()); // random exit index
-				Car car = new Car(road.get(lane).get(0), exits.get(exitDraw), speedLimit, vision, rand);
+				int speed = rand.nextInt(speedLimit) + 1;
+				Car car = new Car(road.get(lane).get(0), exits.get(exitDraw), speed, vision, rand);
 				road.get(lane).get(0).car = car;
 				cars.add(car);
 			}
@@ -184,48 +187,51 @@ public class World {
 		
 		// change the signal of every car in the simulation
 		for(Car car : cars){
-			// grab the car's location
-			roadSquare square = car.location;
-			// store the signal in case it's time to move the car
-			int sig = square.changeSignal();
 			// boolean to make sure double moves happen
 			boolean cont = true;
 			roadSquare newsq;
-			// check to see if it's time to move the car, and if so, move it accordingly and save the result
-			if(step%car.speed == 0){
-				while(cont && newcars.contains(car)){
-					if(sig == 0){
-						cont = false;
-						newsq = square.neighbors.get(3);
-					} else if(sig == 1){
-						newsq = square.neighbors.get(1);
-					} else {
-						newsq = square.neighbors.get(5);
+			// make sure the car still exists
+			if(newcars.contains(car)){
+				// grab the car's location
+				roadSquare square = car.location;
+				// store the signal in case it's time to move the car
+				int sig = square.changeSignal();
+				// check to see if it's time to move the car, and if so, move it accordingly and save the result
+				if(step%car.speed == 0){
+					while(cont && newcars.contains(car)){
+						if(sig == 0){
+							cont = false;
+							newsq = square.neighbors.get(3);
+						} else if(sig == 1){
+							newsq = square.neighbors.get(1);
+						} else {
+							newsq = square.neighbors.get(5);
+						}
+						String result = newsq.occupy(car);
+						if(result.equals("GOAL")){
+							cont = false;
+							newcars.remove(car);
+							goals++;
+						} else if(result.equals("CRASH")){
+							cont = false;
+							newcars.remove(car);
+							newcars.remove(newsq.car);
+							newsq.empty();
+							crashes++;
+						}
+						square.empty();
+						// for the next run through, change sig to 0
+						sig = 0;
+						// and change square to the current square
+						square = newsq;
 					}
-					String result = newsq.occupy(car);
-					if(result.equals("GOAL")){
-						cont = false;
-						newcars.remove(car);
-						goals++;
-					} else if(result.equals("CRASH")){
-						cont = false;
-						newcars.remove(car);
-						newcars.remove(newsq.car);
-						newsq.empty();
-						crashes++;
-					}
-					square.empty();
-					// for the next run through, change sig to 0
-					sig = 0;
-					// and change square to the current square
-					square = newsq;
 				}
 			}
 		}
 		// updates the list of cars to include modifications
 		cars = newcars;
 		
-		if (step % 2 == 0) { // initalizes new cars every other step
+		if (step%2 == 0) { // initalizes new cars every other step
 			initializeCars();
 		}
 		
@@ -244,7 +250,7 @@ public class World {
 	 */
 	public static void main(String[] args){
 		World world = new World(5, 100);
-		for (int t = 0; t < 200; t++) {
+		for (int t = 0; t < numRuns; t++) {
 			System.out.printf("t= %d\n", t);
 			world.tick();
 		}
