@@ -256,12 +256,24 @@ public class World {
 	/**
 	 * Main method from which to run the simulation
 	 * 
-	 * @param args - list containing the number of lanes, number of columns, and number of ticks to run
+	 * @param args
+	 *            0 - optional numRuns. 1 - what test to run (or nothing if just
+	 *            using preset values). 2,3 - what values to use in tests
 	 * 
-	 * TODO - modify to use args instead of preset values
+	 *            TODO - modify to use args instead of preset values
 	 */
 	public static void main(String[] args){
-		World world = new World(5, 100, 0);
+
+		/* Checking first param for numTicks */
+		if (args[0].matches("[0-9]+")) {
+			numRuns = Integer.parseInt(args[0]);
+		} else {
+			for (int i = args.length - 1; i >= 0; i--) { // shift forward one
+				args[i] = args[i + 1];
+			}
+		}
+
+		World world = new World(5, 200, 0);
 		for (int t = 0; t < numRuns; t++) {
 			System.out.printf("t= %d\n", t);
 			world.tick();

@@ -64,7 +64,7 @@ public class drawGrid {
                     Border border = null;
                     
                     
-                    if (row < 5 && row>0) {
+					if (row < 5 && row > 0) {
 //                    	if(row == 0){
 //                    
 //                    	}
