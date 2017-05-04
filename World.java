@@ -10,18 +10,18 @@ import java.util.Random;
 
 public class World {
 
-	int speedLimit = 5; // minimum speed, cars will travel anywhere from 1 to
+	int speedLimit = 6; // minimum speed, cars will travel anywhere from 1 to
 						// speedLimit
 	static int numRuns = 200;
 
 	public static ArrayList<ArrayList<roadSquare>> road = new ArrayList<ArrayList<roadSquare>>();
 	public static drawGrid screen;
-	public int frameRate = 400; // rate it changes in milliseconds
+	public int frameRate = 200; // rate it changes in milliseconds
 
 	public ArrayList<roadSquare> exits = new ArrayList<roadSquare>();
 
 	ArrayList<Car> cars = new ArrayList<Car>();
-	double carDensity = 0.1; // number of cars per 2 roadSquares
+	double carDensity = 0.2; // number of cars per 2 roadSquares
 	
 	int step = 0; // the number of ticks that have passed so far in the
 					// simulation for use in calculating speed
