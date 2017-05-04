@@ -34,13 +34,20 @@ public class World {
 								// something in its blind spot
 	public static ArrayList<roadSquare> crashes = null; // list of crashes that have occured in the last tick
 
+	Random random = new Random();
+
+
 	/*
 	 * Constructor that creates all roadSquares and randomly sets exits
 	 * 
 	 * @param int numLanes
 	 * @param int numCols
+	 * @param int seed
 	 */
-	public World(int numLanes, int numCols) {
+	public World(int numLanes, int numCols, int seed) {
+		// seed random
+		random.setSeed(seed);
+		
 		// create the screen
 		screen = new drawGrid(numLanes, numCols);
 		this.numLanes = numLanes;
@@ -160,7 +167,7 @@ public class World {
 			if (draw < carDensity) {
 				exitDraw = rand.nextInt(exits.size()); // random exit index
 				int speed = rand.nextInt(speedLimit) + 1;
-				Car car = new Car(road.get(lane).get(0), exits.get(exitDraw), speed, vision, rand);
+				Car car = new Car(road.get(lane).get(0), exits.get(exitDraw), speed, 1, false, vision, this);
 				road.get(lane).get(0).car = car;
 				cars.add(car);
 			}
@@ -254,7 +261,7 @@ public class World {
 	 * TODO - modify to use args instead of preset values
 	 */
 	public static void main(String[] args){
-		World world = new World(5, 100);
+		World world = new World(5, 100, 0);
 		for (int t = 0; t < numRuns; t++) {
 			System.out.printf("t= %d\n", t);
 			world.tick();
