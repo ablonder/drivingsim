@@ -264,6 +264,8 @@ public class World {
 	 */
 	public static void main(String[] args){
 
+		if (args.length > 0) { // if we have params
+
 		/* Checking first param for numTicks */
 		if (args[0].matches("[0-9]+")) {
 			numRuns = Integer.parseInt(args[0]);
@@ -273,14 +275,16 @@ public class World {
 			}
 		}
 
-		World world = new World(5, 200, 0);
-		for (int t = 0; t < numRuns; t++) {
-			System.out.printf("t= %d\n", t);
-			world.tick();
+		} else { // run once normally
+			World world = new World(5, 200, 0);
+			for (int t = 0; t < numRuns; t++) {
+				System.out.printf("t= %d\n", t);
+				world.tick();
+			}
+			System.out.println("Step: " + world.step);
+			System.out.println("Crashes: " + world.crashcount);
+			System.out.println("Goals: " + world.goals);
 		}
-		System.out.println("Step: " + world.step);
-		System.out.println("Crashes: " + world.crashcount);
-		System.out.println("Goals: " + world.goals);
 	}
 
 }
