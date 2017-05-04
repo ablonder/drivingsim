@@ -9,6 +9,8 @@ import java.util.Random;
  */
 public class Car {
 	
+	// the world the car is in, just so it can access some essential class variables
+	final World world;
 	// location of the exit the car is trying to reach
 	final roadSquare goal;
 	// the car's base speed - unchanging
@@ -16,11 +18,11 @@ public class Car {
 	// the car's current speed
 	int speed;
 	// the amount the car is willing to deviate from its base speed
-	final int risktaking;
+	int risktaking;
+	// does risktaking increase as the car approaches its exit
+	final boolean var_risk;
 	// proportion of the time the car can tell if something is in its blind spot (between 0 and 1)
 	final float visibility;
-	// a random number generator
-	final Random random;
 	// the car's current location
 	roadSquare location;
 	
@@ -28,19 +30,22 @@ public class Car {
 	 * Constructor for a new car to initialize class variables
 	 * 
 	 * @param roadSquare initsq - the roadSqare the car starts at
-	 * @param roadSquare goalsq - the exit you're trying to get to
-	 * @param int initspeed - the number of ticks it takes for you to move one square
+	 * @param roadSquare goalsq - the exit the car is trying to get to
+	 * @param int initspeed - the number of ticks it takes for the car to move one square
+	 * @param int risk - amoung a car is willing to deviate from their base speed (if not overwritten)
+	 * @param boolen varrisk - does the car's tendency to take risks vary as it approaches its exit
 	 * @param float vision - the proportion of the time the car notices something in its blind spot
-	 * @param Random rand - the world's random number generator (so we can use the same seed)
+	 * @param World w - the world that the car is in
 	 * 
 	 */
-	public Car(roadSquare initsq, roadSquare goalsq, int initspeed, int risk, float vision, Random rand){
+	public Car(roadSquare initsq, roadSquare goalsq, int initspeed, int risk, boolean varrisk, float vision, World w){
+		world = w;
 		goal = goalsq;
 		basespeed = initspeed;
 		speed = basespeed;
-		risktaking = risk;
+		risktaking = basespeed;
+		var_risk = varrisk;
 		visibility = vision;
-		random = rand;
 		location = initsq;
 	}
 	
@@ -54,8 +59,8 @@ public class Car {
 	 */
 	public int getAction(ArrayList<roadSquare> neighbors){
 		// check to see if the car can see it's back right and back left neighbors
-		float ldraw = random.nextFloat();
-		float rdraw = random.nextFloat();
+		float ldraw = world.random.nextFloat();
+		float rdraw = world.random.nextFloat();
 		
 		// check the speed of the cars around it and change its own speed accordingly
 		speedcheck(neighbors);
@@ -155,9 +160,20 @@ public class Car {
 	
 	/*
 	 * Checks the speed of this cars' neighbors and adjusts the car's speed in accordance with its risktakingness
+	 * Decrements risktaking if necessary
 	 * @param neighbors - a list of the neighboring squares clockwise from the car's back left
 	 */
 	public void speedcheck(ArrayList<roadSquare> neighbors){
+		// if the car's risktaking tendency varies, set it equal to the distance between the car and its exit
+		// TODO - should I vary basespeed here too?
+		if(var_risk){
+			risktaking = goal.y - location.y;
+			// if that value is negative, add it to the length of the track so it can wrap around
+			if(risktaking <= 0){
+				risktaking = world.numCols+risktaking;
+			}
+		}
+		
 		// sum of the car's neighbors' speeds
 		int totalspeed = 0;
 		// number of neighboring cars
