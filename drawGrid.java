@@ -102,6 +102,14 @@ public class drawGrid {
                     else{
                     	cellPane.setBackground(defaultBackground);
                     }
+	                    
+	                if(World.crashes != null){
+	                	for(roadSquare crashee : World.crashes){
+	                		if(crashee.y == row-1 && crashee.x == col){
+	                			cellPane.setBackground(Color.RED);
+	                		}
+	                	}
+	                }
                     }
                     
                     else if(col == 33 | col == 66 | col == 99){

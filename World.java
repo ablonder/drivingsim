@@ -32,7 +32,7 @@ public class World {
 	public int numCols;
 	float vision = (float) .95; // the proportion of the time the car notices
 								// something in its blind spot
-	public ArrayList<roadSquare> crashes; // list of crashes that have occured in the last tick
+	public static ArrayList<roadSquare> crashes = null; // list of crashes that have occured in the last tick
 
 	/*
 	 * Constructor that creates all roadSquares and randomly sets exits
