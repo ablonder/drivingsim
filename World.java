@@ -16,7 +16,7 @@ public class World {
 
 	public static ArrayList<ArrayList<roadSquare>> road = new ArrayList<ArrayList<roadSquare>>();
 	public static drawGrid screen;
-	public int frameRate = 300; // rate it changes in milliseconds
+	public int frameRate = 400; // rate it changes in milliseconds
 
 	public ArrayList<roadSquare> exits = new ArrayList<roadSquare>();
 
@@ -25,13 +25,17 @@ public class World {
 	
 	int step = 0; // the number of ticks that have passed so far in the
 					// simulation for use in calculating speed
-	int crashes = 0; // the number of car crashes that have occurred
+	int crashcount = 0; // the number of car crashes that have occurred
 	int goals = 0; // the number of cars that have reached their goal
 	int numExits = 3; // the number of exit per side
 	public int numLanes;
 	public int numCols;
 	float vision = (float) .95; // the proportion of the time the car notices
 								// something in its blind spot
+	public ArrayList<roadSquare> crashes; // list of crashes that have occured in the last tick
+	
+	Random random = new Random();
+	
 
 	/*
 	 * Constructor that creates all roadSquares and randomly sets exits
@@ -159,7 +163,7 @@ public class World {
 			if (draw < carDensity) {
 				exitDraw = rand.nextInt(exits.size()); // random exit index
 				int speed = rand.nextInt(speedLimit) + 1;
-				Car car = new Car(road.get(lane).get(0), exits.get(exitDraw), speed, vision, rand);
+				Car car = new Car(road.get(lane).get(0), exits.get(exitDraw), speed, 1, vision, rand);
 				road.get(lane).get(0).car = car;
 				cars.add(car);
 			}
@@ -183,52 +187,59 @@ public class World {
 		step++;
 		
 		// creates a new list of cars to hold any changes made
-		ArrayList<Car> newcars = new ArrayList<Car>(cars);			
+		ArrayList<Car> newcars = new ArrayList<Car>(cars);
+		
+		// list of roadSquares that have had crashes this tick
+		crashes = new ArrayList<roadSquare>();
 		
 		// change the signal of every car in the simulation
 		for(Car car : cars){
-			// grab the car's location
-			roadSquare square = car.location;
-			// store the signal in case it's time to move the car
-			int sig = square.changeSignal();
 			// boolean to make sure double moves happen
 			boolean cont = true;
 			roadSquare newsq;
-			// check to see if it's time to move the car, and if so, move it accordingly and save the result
-			if(step%car.speed == 0){
-				while(cont && newcars.contains(car)){
-					if(sig == 0){
-						cont = false;
-						newsq = square.neighbors.get(3);
-					} else if(sig == 1){
-						newsq = square.neighbors.get(1);
-					} else {
-						newsq = square.neighbors.get(5);
+			// make sure the car still exists
+			if(newcars.contains(car)){
+				// grab the car's location
+				roadSquare square = car.location;
+				// store the signal in case it's time to move the car
+				int sig = square.changeSignal();
+				// check to see if it's time to move the car, and if so, move it accordingly and save the result
+				if(step%car.speed == 0){
+					while(cont && newcars.contains(car)){
+						if(sig == 0){
+							cont = false;
+							newsq = square.neighbors.get(3);
+						} else if(sig == 1){
+							newsq = square.neighbors.get(1);
+						} else {
+							newsq = square.neighbors.get(5);
+						}
+						String result = newsq.occupy(car);
+						if(result.equals("GOAL")){
+							cont = false;
+							newcars.remove(car);
+							goals++;
+						} else if(result.equals("CRASH")){
+							cont = false;
+							newcars.remove(car);
+							newcars.remove(newsq.car);
+							newsq.empty();
+							crashes.add(newsq);
+							crashcount++;
+						}
+						square.empty();
+						// for the next run through, change sig to 0
+						sig = 0;
+						// and change square to the current square
+						square = newsq;
 					}
-					String result = newsq.occupy(car);
-					if(result.equals("GOAL")){
-						cont = false;
-						newcars.remove(car);
-						goals++;
-					} else if(result.equals("CRASH")){
-						cont = false;
-						newcars.remove(car);
-						newcars.remove(newsq.car);
-						newsq.empty();
-						crashes++;
-					}
-					square.empty();
-					// for the next run through, change sig to 0
-					sig = 0;
-					// and change square to the current square
-					square = newsq;
 				}
 			}
 		}
 		// updates the list of cars to include modifications
 		cars = newcars;
 		
-		if (step % 2 == 0) { // initalizes new cars every other step
+		if (step%2 == 0) { // initalizes new cars every other step
 			initializeCars();
 		}
 		
@@ -252,7 +263,7 @@ public class World {
 			world.tick();
 		}
 		System.out.println("Step: " + world.step);
-		System.out.println("Crashes: " + world.crashes);
+		System.out.println("Crashes: " + world.crashcount);
 		System.out.println("Goals: " + world.goals);
 	}
 
