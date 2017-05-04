@@ -33,6 +33,9 @@ public class World {
 	float vision = (float) .95; // the proportion of the time the car notices
 								// something in its blind spot
 	public ArrayList<roadSquare> crashes; // list of crashes that have occured in the last tick
+	
+	Random random = new Random();
+	
 
 	/*
 	 * Constructor that creates all roadSquares and randomly sets exits
@@ -160,7 +163,7 @@ public class World {
 			if (draw < carDensity) {
 				exitDraw = rand.nextInt(exits.size()); // random exit index
 				int speed = rand.nextInt(speedLimit) + 1;
-				Car car = new Car(road.get(lane).get(0), exits.get(exitDraw), speed, vision, rand);
+				Car car = new Car(road.get(lane).get(0), exits.get(exitDraw), speed, 1, vision, rand);
 				road.get(lane).get(0).car = car;
 				cars.add(car);
 			}

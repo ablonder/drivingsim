@@ -11,8 +11,12 @@ public class Car {
 	
 	// location of the exit the car is trying to reach
 	final roadSquare goal;
-	// the car's speed - currently unchanging
-	final int speed;
+	// the car's base speed - unchanging
+	final int basespeed;
+	// the car's current speed
+	int speed;
+	// the amount the car is willing to deviate from its base speed
+	final int risktaking;
 	// proportion of the time the car can tell if something is in its blind spot (between 0 and 1)
 	final float visibility;
 	// a random number generator
@@ -30,9 +34,11 @@ public class Car {
 	 * @param Random rand - the world's random number generator (so we can use the same seed)
 	 * 
 	 */
-	public Car(roadSquare initsq, roadSquare goalsq, int initspeed, float vision, Random rand){
+	public Car(roadSquare initsq, roadSquare goalsq, int initspeed, int risk, float vision, Random rand){
 		goal = goalsq;
-		speed = initspeed;
+		basespeed = initspeed;
+		speed = basespeed;
+		risktaking = risk;
 		visibility = vision;
 		random = rand;
 		location = initsq;
@@ -50,6 +56,9 @@ public class Car {
 		// check to see if the car can see it's back right and back left neighbors
 		float ldraw = random.nextFloat();
 		float rdraw = random.nextFloat();
+		
+		// check the speed of the cars around it and change its own speed accordingly
+		speedcheck(neighbors);
 		
 		// list of possible directions to be removed as directions are noted as occupied
 		ArrayList<Integer> posdirs = new ArrayList<Integer>(Arrays.asList(-1, 0, 1));
@@ -142,6 +151,43 @@ public class Car {
 			return 0;
 		}
 		
+	}
+	
+	/*
+	 * Checks the speed of this cars' neighbors and adjusts the car's speed in accordance with its risktakingness
+	 * @param neighbors - a list of the neighboring squares clockwise from the car's back left
+	 */
+	public void speedcheck(ArrayList<roadSquare> neighbors){
+		// sum of the car's neighbors' speeds
+		int totalspeed = 0;
+		// number of neighboring cars
+		int carcount = 0;
+		// loop through all the car's neighbors and add all the cars' speeds
+		for(roadSquare sq : neighbors){
+			if(sq != null && sq.car != null){
+				carcount++;
+				totalspeed += sq.car.speed;
+			}
+		}
+		// if the car actually has neighbors change its speed accordingly
+		if(carcount > 0){
+			// calculate the difference between average speed of the car's neighbors and the car's base speed
+			int diff = Math.abs(basespeed - totalspeed/carcount);
+			// if that's less than the car's risktakingness, just change to that
+			if(diff < risktaking){
+				speed = totalspeed/carcount;
+			} else {
+				// otherwise adjust speed by its risktakingness in the right direction
+				if(totalspeed/carcount > basespeed){
+					speed = basespeed + risktaking;
+				}else{
+					speed = basespeed - risktaking;
+				}
+			}
+		} else {
+			// otherwise just revert to basespeed
+			speed = basespeed;
+		}
 	}
 	
 }
