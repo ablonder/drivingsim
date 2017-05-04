@@ -43,7 +43,7 @@ public class Car {
 		goal = goalsq;
 		basespeed = initspeed;
 		speed = basespeed;
-		risktaking = basespeed;
+		risktaking = risk;
 		var_risk = varrisk;
 		visibility = vision;
 		location = initsq;
