@@ -10,29 +10,32 @@ import java.util.Random;
 
 public class World {
 
-	int speedLimit = 6; // minimum speed, cars will travel anywhere from 1 to
-						// speedLimit
 	static int numRuns = 200;
-
-	public static ArrayList<ArrayList<roadSquare>> road = new ArrayList<ArrayList<roadSquare>>();
-	public static drawGrid screen;
-	public int frameRate = 200; // rate it changes in milliseconds
+	static int speedLimit = 3; // minimum speed, cars will travel anywhere from
+	// 1 to
+	// speedLimit
+	static float vision = (float) .95; // the proportion of the time the car
+	// notices
+	// something in its blind spot
+	static float carDensity = (float) 0.2; // number of cars per 2 roadSquares
 
 	public ArrayList<roadSquare> exits = new ArrayList<roadSquare>();
-
+	public static ArrayList<ArrayList<roadSquare>> road = new ArrayList<ArrayList<roadSquare>>();
 	ArrayList<Car> cars = new ArrayList<Car>();
-	double carDensity = 0.2; // number of cars per 2 roadSquares
+	public static ArrayList<roadSquare> crashes = null; // list of crashes that
+														// have occured in the
+														// last tick
+
+	public static drawGrid screen;
+	public int frameRate = 200; // rate it changes in milliseconds
 	
 	int step = 0; // the number of ticks that have passed so far in the
 					// simulation for use in calculating speed
-	int crashcount = 0; // the number of car crashes that have occurred
-	int goals = 0; // the number of cars that have reached their goal
+	int crashcount; // the number of car crashes that have occurred
+	int goals; // the number of cars that have reached their goal
 	int numExits = 3; // the number of exit per side
 	public int numLanes;
 	public int numCols;
-	float vision = (float) .95; // the proportion of the time the car notices
-								// something in its blind spot
-	public static ArrayList<roadSquare> crashes = null; // list of crashes that have occured in the last tick
 
 	Random random = new Random();
 
@@ -45,6 +48,12 @@ public class World {
 	 * @param int seed
 	 */
 	public World(int numLanes, int numCols, int seed) {
+		exits.clear();
+		road.clear();
+		cars.clear();
+		goals = 0;
+		crashcount = 0;
+
 		// seed random
 		random.setSeed(seed);
 		
@@ -254,37 +263,91 @@ public class World {
 	}
 	
 	/**
+	 * Runs the simulation
+	 */
+	static void runWorld() {
+		World world = new World(5, 200, 0);
+		for (int t = 0; t < numRuns; t++) {
+			// System.out.printf("t= %d\n", t);
+			world.tick();
+		}
+		System.out.println("Step: " + world.step);
+		System.out.println("Crashes: " + world.crashcount);
+		System.out.println("Goals: " + world.goals);
+		System.out.print("\n----------------\n");
+	}
+
+	/**
 	 * Main method from which to run the simulation
 	 * 
 	 * @param args
-	 *            0 - optional numRuns. 1 - what test to run (or nothing if just
-	 *            using preset values). 2,3 - what values to use in tests
+	 *            0 - numRuns (optional). 1 - what test to run (or nothing if
+	 *            just using preset values). 2,3 - what values to use in tests
 	 * 
-	 *            TODO - modify to use args instead of preset values
+	 *            note: vision/density should be in int form to be divided by
+	 *            100
+	 * @tests speedLimit, vision, density, and risk
+	 * @TODO risk method
 	 */
 	public static void main(String[] args){
-
 		if (args.length > 0) { // if we have params
 
-		/* Checking first param for numTicks */
-		if (args[0].matches("[0-9]+")) {
-			numRuns = Integer.parseInt(args[0]);
-		} else {
-			for (int i = args.length - 1; i >= 0; i--) { // shift forward one
-				args[i] = args[i + 1];
+			/* Checking first param for numRuns */
+			if (args[0].matches("[0-9]+")) {
+				numRuns = Integer.parseInt(args[0]);
+				for (int i = 0; i < args.length; i++) { // shift one back
+					System.out.println("i= " + i);
+					args[i] = args[i - 1];
+				}
 			}
-		}
 
-		} else { // run once normally
-			World world = new World(5, 200, 0);
-			for (int t = 0; t < numRuns; t++) {
-				System.out.printf("t= %d\n", t);
-				world.tick();
+			if (args.length == 1) {
+				runWorld();
 			}
-			System.out.println("Step: " + world.step);
-			System.out.println("Crashes: " + world.crashcount);
-			System.out.println("Goals: " + world.goals);
+			else if (args.length == 3 && args[1].matches("[0-9]+") && args[1].matches("[0-9]+")) {
+				switch (args[0].toLowerCase()) {
+				case "speedlimit":
+					speedLimit = Integer.parseInt(args[1]);
+					System.out.println("Speed test 1: speedLimit= " + speedLimit);
+					runWorld();
+					speedLimit = Integer.parseInt(args[2]);
+					System.out.println("Speed test 2: speedLimit= " + speedLimit);
+					runWorld();
+					break;
+				case "vision":
+					vision = (float) Integer.parseInt(args[1]);
+					vision /= 100;
+					System.out.println("Vision test 1: Vision= " + vision);
+					runWorld();
+					vision = (float) Integer.parseInt(args[2]);
+					vision /= 100;
+					System.out.println("Vision test 2: Vision= " + vision);
+					runWorld();
+					break;
+				case "density":
+					carDensity = (float) Integer.parseInt(args[1]);
+					carDensity /= 100;
+					System.out.println("Density test 1: Density= " + carDensity);
+					runWorld();
+					carDensity = (float) Integer.parseInt(args[2]);
+					carDensity /= 100;
+					System.out.println("Density test 2: Density= " + carDensity);
+					runWorld();
+					break;
+				case "risk":
+
+				default:
+					System.out.println("Improper test given, must be speedLimit/vision/density/risk.");
+				}
+			}
+			else {
+				System.out.println("Improper arguments given, must be speedLimit/vision/density/risk and int int");
+			}
 		}
+		else {
+			runWorld(); // run once normally
+		}
+		
 	}
 
 }
