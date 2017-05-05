@@ -274,7 +274,17 @@ public class World {
 		System.out.println("Step: " + world.step);
 		System.out.println("Crashes: " + world.crashcount);
 		System.out.println("Goals: " + world.goals);
-		System.out.print("\n----------------\n");
+		System.out.println("\n----------------\n");
+	}
+
+	/**
+	 * Prints out the stats like speedLimit before the game
+	 */
+	public static void statPrinter() {
+		System.out.printf("numRuns= %d\n", numRuns);
+		System.out.printf("speedLimit= %d\n", speedLimit);
+		System.out.printf("vision= %f\n", vision);
+		System.out.printf("carDensity= %f\n\n", carDensity);
 	}
 
 	/**
@@ -282,7 +292,8 @@ public class World {
 	 * 
 	 * @param args
 	 *            0 - numRuns (optional). 1 - what test to run (or nothing if
-	 *            just using preset values). 2,3 - what values to use in tests
+	 *            just using preset values). 2,3...+ - what values to use in
+	 *            tests
 	 * 
 	 *            note: vision/density should be in int form to be divided by
 	 *            100
@@ -304,47 +315,54 @@ public class World {
 			if (args.length == 1) {
 				runWorld();
 			}
-			else if (args.length == 3 && args[1].matches("[0-9]+") && args[1].matches("[0-9]+")) {
+			else {
+				statPrinter();
 				switch (args[0].toLowerCase()) {
 				case "speedlimit":
-					speedLimit = Integer.parseInt(args[1]);
-					System.out.println("Speed test 1: speedLimit= " + speedLimit);
-					runWorld();
-					speedLimit = Integer.parseInt(args[2]);
-					System.out.println("Speed test 2: speedLimit= " + speedLimit);
-					runWorld();
+					for (int i = 1; i < args.length; i++) {
+						if (!args[i].matches("[0-9]+")) {
+							System.out.printf("Improper argument %s\n", args[i]);
+							continue;
+						}
+						speedLimit = Integer.parseInt(args[i]);
+						System.out.println("SpeedLimit test " + i + ": speedLimit = " + speedLimit);
+						runWorld();
+					}
 					break;
 				case "vision":
-					vision = (float) Integer.parseInt(args[1]);
-					vision /= 100;
-					System.out.println("Vision test 1: Vision= " + vision);
-					runWorld();
-					vision = (float) Integer.parseInt(args[2]);
-					vision /= 100;
-					System.out.println("Vision test 2: Vision= " + vision);
-					runWorld();
+					for (int i = 1; i < args.length; i++) {
+						if (!args[i].matches("[0-9]+")) {
+							System.out.printf("Improper argument %s\n", args[i]);
+							continue;
+						}
+						vision = (float) Integer.parseInt(args[i]);
+						vision /= 100;
+						System.out.println("Vision test " + i + ": vision = " + vision);
+						runWorld();
+					}
 					break;
 				case "density":
-					carDensity = (float) Integer.parseInt(args[1]);
-					carDensity /= 100;
-					System.out.println("Density test 1: Density= " + carDensity);
-					runWorld();
-					carDensity = (float) Integer.parseInt(args[2]);
-					carDensity /= 100;
-					System.out.println("Density test 2: Density= " + carDensity);
-					runWorld();
+					for (int i = 1; i < args.length; i++) {
+						if (!args[i].matches("[0-9]+")) {
+							System.out.printf("Improper argument %s\n", args[i]);
+							continue;
+						}
+						carDensity = (float) Integer.parseInt(args[i]);
+						carDensity /= 100;
+						System.out.println("carDensity test " + i + ": carDensity = " + carDensity);
+						runWorld();
+					}
 					break;
 				case "risk":
 
+					break;
 				default:
 					System.out.println("Improper test given, must be speedLimit/vision/density/risk.");
 				}
 			}
-			else {
-				System.out.println("Improper arguments given, must be speedLimit/vision/density/risk and int int");
-			}
 		}
 		else {
+			statPrinter();
 			runWorld(); // run once normally
 		}
 		
