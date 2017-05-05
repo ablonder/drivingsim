@@ -34,8 +34,8 @@ public class World {
 	int crashcount; // the number of car crashes that have occurred
 	int goals; // the number of cars that have reached their goal
 	int numExits = 3; // the number of exit per side
-	public int numLanes;
-	public int numCols;
+	public static int numLanes;
+	public static int numCols;
 
 	Random random = new Random();
 
@@ -69,7 +69,7 @@ public class World {
 			for (int x=0; x<numCols; x++) {
 				/* func definition: roadSquare(int x, int y, Car car, boolean exit) */
 				/* Sets as not a car, and not an exit */
-				current = new roadSquare(x, y, null, false, drawGrid.cellMatrix[y][x]);
+				current = new roadSquare(x, y, null, false);
 				road.get(y).add(current);
 			}
 		}
@@ -266,7 +266,7 @@ public class World {
 	 * Runs the simulation
 	 */
 	static void runWorld() {
-		World world = new World(5, 200, 0);
+		World world = new World(5, 100, 0);
 		for (int t = 0; t < numRuns; t++) {
 			// System.out.printf("t= %d\n", t);
 			world.tick();

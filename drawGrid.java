@@ -55,8 +55,8 @@ public class drawGrid {
             
             
             GridBagConstraints gbc = new GridBagConstraints();
-            for (int row = 0; row < 7; row++) {
-                for (int col = 0; col < 100; col++) {
+            for (int row = 0; row < World.numLanes+2; row++) {
+                for (int col = 0; col < World.numCols; col++) {
                     gbc.gridx = col;
                     gbc.gridy = row;
 
@@ -64,18 +64,19 @@ public class drawGrid {
                     Border border = null;
                     
                     
-					if (row < 5 && row > 0) {
+                    if (row < World.numLanes && row>0) {
+
 //                    	if(row == 0){
 //                    
 //                    	}
-                        if (col < 99) {
+                        if (col < World.numCols-1) {
                             border = new MatteBorder(1, 1, 0, 0, Color.GRAY);
                         } else {
                             border = new MatteBorder(1, 1, 0, 1, Color.GRAY);
                         }
                     } 
-                    else if(row == 5) {
-                        if (col < 99) {
+                    else if(row == World.numLanes) {
+                        if (col < World.numCols-1) {
                             border = new MatteBorder(1, 1, 1, 0, Color.GRAY);
                         } else {
                             border = new MatteBorder(1, 1, 1, 1, Color.GRAY);
@@ -91,7 +92,7 @@ public class drawGrid {
                     cellPane.setBorder(border);
                     add(cellPane, gbc);
                     
-                    if(row != 0 && row != 6){
+                    if(row > 0 && row < World.numLanes+1){
 	                    defaultBackground = cellPane.getBackground();
 	                    cellMatrix[row-1][col] = cellPane;
 //                      cellMatrix[row][col].setBackground(Color.BLUE);
