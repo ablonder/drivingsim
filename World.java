@@ -167,7 +167,7 @@ public class World {
 			if (draw < carDensity) {
 				exitDraw = rand.nextInt(exits.size()); // random exit index
 				int speed = rand.nextInt(speedLimit) + 1;
-				Car car = new Car(road.get(lane).get(0), exits.get(exitDraw), speed, 1, false, vision, this);
+				Car car = new Car(road.get(lane).get(0), exits.get(exitDraw), speed, 1, true, vision, this);
 				road.get(lane).get(0).car = car;
 				cars.add(car);
 			}

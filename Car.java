@@ -164,14 +164,9 @@ public class Car {
 	 * @param neighbors - a list of the neighboring squares clockwise from the car's back left
 	 */
 	public void speedcheck(ArrayList<roadSquare> neighbors){
-		// if the car's risktaking tendency varies, set it equal to the distance between the car and its exit
-		// TODO - should I vary basespeed here too?
-		if(var_risk){
-			risktaking = goal.y - location.y;
-			// if that value is negative, add it to the length of the track so it can wrap around
-			if(risktaking <= 0){
-				risktaking = world.numCols+risktaking;
-			}
+		// if the car's risktaking tendency varies decrease it as the car approaches its exit
+		if(var_risk && ((goal.y - location.y)/3 < risktaking) && goal.y > location.y){
+			risktaking = (goal.y-location.y)/3;
 		}
 		
 		// sum of the car's neighbors' speeds
