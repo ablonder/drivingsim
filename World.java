@@ -14,17 +14,28 @@ public class World {
 	static int speedLimit = 3; // minimum speed, cars will travel anywhere from
 	// 1 to
 	// speedLimit
-	static float vision = (float) .95; // the proportion of the time the car
+	static float vision = (float) .90; // the proportion of the time the car
 	// notices
 	// something in its blind spot
 	static float carDensity = (float) 0.2; // number of cars per 2 roadSquares
+	static int risk = 1; // the lower the riskier (less inclined to adapt to
+							// traffic)
+	static boolean varrisk = false; // whether cars get riskier as they aproach
+									// exit
 
 	public ArrayList<roadSquare> exits = new ArrayList<roadSquare>();
 	public static ArrayList<ArrayList<roadSquare>> road = new ArrayList<ArrayList<roadSquare>>();
-	ArrayList<Car> cars = new ArrayList<Car>();
 	public static ArrayList<roadSquare> crashes = null; // list of crashes that
-														// have occured in the
-														// last tick
+	// have occured in the
+	// last tick
+
+	public static int humans = 0;
+	public static int aggressives = 0;
+	public static int agents = 0;
+	ArrayList<Car> cars = new ArrayList<Car>();
+	ArrayList<Car> humanCars = new ArrayList<Car>();
+	ArrayList<Car> aggressiveCars = new ArrayList<Car>();
+	ArrayList<Car> agentCars = new ArrayList<Car>();
 
 	public static drawGrid screen;
 	public int frameRate = 200; // rate it changes in milliseconds
@@ -162,7 +173,7 @@ public class World {
 	}
 	
 	/*
-	 * Adds cars to each lane in first column depending on carDensity
+	 * Adds cars to each lane in first column depending on carDensityxs
 	 */
 	private void initializeCars() {
 		Random rand = new Random();
@@ -176,13 +187,28 @@ public class World {
 			if (draw < carDensity) {
 				exitDraw = rand.nextInt(exits.size()); // random exit index
 				int speed = rand.nextInt(speedLimit) + 1;
-				Car car = new Car(road.get(lane).get(0), exits.get(exitDraw), speed, 1, false, vision, this);
+				Car car = new Car(road.get(lane).get(0), exits.get(exitDraw), speed, risk, varrisk, vision, this);
 				road.get(lane).get(0).car = car;
 				cars.add(car);
 			}
 		}
 	}
 	
+	/**
+	 * Initializes car of type human
+	 * 
+	 * @param initsq
+	 * @param goalsq
+	 * @param speed
+	 * @return Car
+	 */
+	public Car intializeHuman(roadSquare initsq, roadSquare goalsq, int speed) {
+		int thisRisk = 2;
+		boolean thisVarrisk = true;
+		float thisVision = (float) 0.9;
+		return new Car(initsq, goalsq, speed, thisRisk, thisVarrisk, thisVision, this);
+	}
+
 	/*
 	 * A single tick in the simulation
 	 * 
@@ -281,10 +307,13 @@ public class World {
 	 * Prints out the stats like speedLimit before the game
 	 */
 	public static void statPrinter() {
+		System.out.println("Base stats: ");
 		System.out.printf("numRuns= %d\n", numRuns);
 		System.out.printf("speedLimit= %d\n", speedLimit);
-		System.out.printf("vision= %f\n", vision);
-		System.out.printf("carDensity= %f\n\n", carDensity);
+		System.out.printf("vision= %.2f\n", vision);
+		System.out.printf("carDensity= %.2f\n", carDensity);
+		System.out.printf("risk= %d\n", risk);
+		System.out.println("varrisk= " + varrisk + "\n");
 	}
 
 	/**
@@ -311,11 +340,36 @@ public class World {
 					args[i] = args[i - 1];
 				}
 			}
+			
+			/* Checking to see if we want to compare preset profiles */
+			if (args[0].equalsIgnoreCase("profile")) {
+				if (args.length == 3) {
+					if (args[1].matches("[0-9]|10")) {
+						humans = Integer.parseInt(args[1]);
+					} else {
+						System.out.println("Improper human percentage entered: int 0-10");
+					}
 
-			if (args.length == 1) {
+					if (args[2].matches("[0-9]|10")) {
+						aggressives = Integer.parseInt(args[1]);
+					} else {
+						System.out.println("Aggressives human percentage entered: int 0-10");
+					}
+
+					if (args[3].matches("[0-9]|10")) {
+						agents = Integer.parseInt(args[1]);
+					} else {
+						System.out.println("Agents human percentage entered: int 0-10");
+					}
+				} else {
+					System.out.println("Enter int (humans), int (aggressives), int (agents)");
+				}
+			}
+			else if (args.length == 1 && !args[0].toLowerCase().equals("varrisk")) {
 				runWorld();
 			}
 			else {
+				System.out.println("Singe variable avalysis\n");
 				statPrinter();
 				switch (args[0].toLowerCase()) {
 				case "speedlimit":
@@ -354,10 +408,26 @@ public class World {
 					}
 					break;
 				case "risk":
-
+					for (int i = 1; i < args.length; i++) {
+						if (!args[i].matches("[0-9]+")) {
+							System.out.printf("Improper argument %s\n", args[i]);
+							continue;
+						}
+						risk = Integer.parseInt(args[i]);
+						System.out.println("Risk test " + i + ": risk = " + risk);
+						runWorld();
+					}
+					break;
+				case "varrisk":
+					varrisk = true;
+					System.out.println("Varrisk = true");
+					runWorld();
+					varrisk = false;
+					System.out.println("Varrisk = false");
+					runWorld();
 					break;
 				default:
-					System.out.println("Improper test given, must be speedLimit/vision/density/risk.");
+					System.out.println("Improper test given, must be speedLimit/vision/density/risk/varrisk.");
 				}
 			}
 		}
