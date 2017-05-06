@@ -1,4 +1,3 @@
-import java.awt.Color;
 import java.util.ArrayList;
 
 /**
@@ -22,18 +21,16 @@ public class roadSquare {
 	public boolean exit; // whether it's an exit
 	public ArrayList<roadSquare> neighbors;	//arraylist of neighbors
 	public int signal;				//-1 for left, 1 for right, 0 for none
-	public drawGrid.CellPane cell;
 	
 	/**
 	 * Constructor that sets class variables
 	 */
-	public roadSquare(int x, int y, Car car, boolean exit, drawGrid.CellPane cell) {
+	public roadSquare(int x, int y, Car car, boolean exit) {
 		this.x = x;
 		this.y = y;
 		this.car = car;
 		this.exit = exit;
 		this.signal = 0;
-		this.cell = cell;
 	}
 
 	/**
@@ -82,22 +79,6 @@ public class roadSquare {
 	public void empty() {
 		car = null;
 	}
-	
-	public void checkCar() {
-		if(car != null){
-			System.out.println(y);
-			System.out.println(x);
-    		drawGrid.cellMatrix[y][x].setBackground(Color.BLUE);
-    		
-    	}
-    	
-    	else if(car == null){
-    		System.out.println(y);
-			System.out.println(x);
-    		drawGrid.cellMatrix[y][x].setBackground(Color.GRAY);
-    	}
-
-		}
 	}
 	
 

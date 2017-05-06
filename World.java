@@ -10,29 +10,32 @@ import java.util.Random;
 
 public class World {
 
-	int speedLimit = 5; // minimum speed, cars will travel anywhere from 1 to
-						// speedLimit
 	static int numRuns = 200;
-
-	public static ArrayList<ArrayList<roadSquare>> road = new ArrayList<ArrayList<roadSquare>>();
-	public static drawGrid screen;
-	public int frameRate = 400; // rate it changes in milliseconds
+	static int speedLimit = 3; // minimum speed, cars will travel anywhere from
+	// 1 to
+	// speedLimit
+	static float vision = (float) .95; // the proportion of the time the car
+	// notices
+	// something in its blind spot
+	static float carDensity = (float) 0.2; // number of cars per 2 roadSquares
 
 	public ArrayList<roadSquare> exits = new ArrayList<roadSquare>();
-
+	public static ArrayList<ArrayList<roadSquare>> road = new ArrayList<ArrayList<roadSquare>>();
 	ArrayList<Car> cars = new ArrayList<Car>();
-	double carDensity = 0.1; // number of cars per 2 roadSquares
+	public static ArrayList<roadSquare> crashes = null; // list of crashes that
+														// have occured in the
+														// last tick
+
+	public static drawGrid screen;
+	public int frameRate = 200; // rate it changes in milliseconds
 	
 	int step = 0; // the number of ticks that have passed so far in the
 					// simulation for use in calculating speed
-	int crashcount = 0; // the number of car crashes that have occurred
-	int goals = 0; // the number of cars that have reached their goal
+	int crashcount; // the number of car crashes that have occurred
+	int goals; // the number of cars that have reached their goal
 	int numExits = 3; // the number of exit per side
-	public int numLanes;
-	public int numCols;
-	float vision = (float) .95; // the proportion of the time the car notices
-								// something in its blind spot
-	public static ArrayList<roadSquare> crashes = null; // list of crashes that have occured in the last tick
+	public static int numLanes;
+	public static int numCols;
 
 	Random random = new Random();
 
@@ -45,6 +48,12 @@ public class World {
 	 * @param int seed
 	 */
 	public World(int numLanes, int numCols, int seed) {
+		exits.clear();
+		road.clear();
+		cars.clear();
+		goals = 0;
+		crashcount = 0;
+
 		// seed random
 		random.setSeed(seed);
 		
@@ -60,7 +69,7 @@ public class World {
 			for (int x=0; x<numCols; x++) {
 				/* func definition: roadSquare(int x, int y, Car car, boolean exit) */
 				/* Sets as not a car, and not an exit */
-				current = new roadSquare(x, y, null, false, drawGrid.cellMatrix[y][x]);
+				current = new roadSquare(x, y, null, false);
 				road.get(y).add(current);
 			}
 		}
@@ -254,21 +263,109 @@ public class World {
 	}
 	
 	/**
-	 * Main method from which to run the simulation
-	 * 
-	 * @param args - list containing the number of lanes, number of columns, and number of ticks to run
-	 * 
-	 * TODO - modify to use args instead of preset values
+	 * Runs the simulation
 	 */
-	public static void main(String[] args){
+	static void runWorld() {
 		World world = new World(5, 100, 0);
 		for (int t = 0; t < numRuns; t++) {
-			System.out.printf("t= %d\n", t);
+			// System.out.printf("t= %d\n", t);
 			world.tick();
 		}
 		System.out.println("Step: " + world.step);
 		System.out.println("Crashes: " + world.crashcount);
 		System.out.println("Goals: " + world.goals);
+		System.out.println("\n----------------\n");
+	}
+
+	/**
+	 * Prints out the stats like speedLimit before the game
+	 */
+	public static void statPrinter() {
+		System.out.printf("numRuns= %d\n", numRuns);
+		System.out.printf("speedLimit= %d\n", speedLimit);
+		System.out.printf("vision= %f\n", vision);
+		System.out.printf("carDensity= %f\n\n", carDensity);
+	}
+
+	/**
+	 * Main method from which to run the simulation
+	 * 
+	 * @param args
+	 *            0 - numRuns (optional). 1 - what test to run (or nothing if
+	 *            just using preset values). 2,3...+ - what values to use in
+	 *            tests
+	 * 
+	 *            note: vision/density should be in int form to be divided by
+	 *            100
+	 * @tests speedLimit, vision, density, and risk
+	 * @TODO risk method
+	 */
+	public static void main(String[] args){
+		if (args.length > 0) { // if we have params
+
+			/* Checking first param for numRuns */
+			if (args[0].matches("[0-9]+")) {
+				numRuns = Integer.parseInt(args[0]);
+				for (int i = 0; i < args.length; i++) { // shift one back
+					System.out.println("i= " + i);
+					args[i] = args[i - 1];
+				}
+			}
+
+			if (args.length == 1) {
+				runWorld();
+			}
+			else {
+				statPrinter();
+				switch (args[0].toLowerCase()) {
+				case "speedlimit":
+					for (int i = 1; i < args.length; i++) {
+						if (!args[i].matches("[0-9]+")) {
+							System.out.printf("Improper argument %s\n", args[i]);
+							continue;
+						}
+						speedLimit = Integer.parseInt(args[i]);
+						System.out.println("SpeedLimit test " + i + ": speedLimit = " + speedLimit);
+						runWorld();
+					}
+					break;
+				case "vision":
+					for (int i = 1; i < args.length; i++) {
+						if (!args[i].matches("[0-9]+")) {
+							System.out.printf("Improper argument %s\n", args[i]);
+							continue;
+						}
+						vision = (float) Integer.parseInt(args[i]);
+						vision /= 100;
+						System.out.println("Vision test " + i + ": vision = " + vision);
+						runWorld();
+					}
+					break;
+				case "density":
+					for (int i = 1; i < args.length; i++) {
+						if (!args[i].matches("[0-9]+")) {
+							System.out.printf("Improper argument %s\n", args[i]);
+							continue;
+						}
+						carDensity = (float) Integer.parseInt(args[i]);
+						carDensity /= 100;
+						System.out.println("carDensity test " + i + ": carDensity = " + carDensity);
+						runWorld();
+					}
+					break;
+				case "risk":
+
+					break;
+				default:
+					System.out.println("Improper test given, must be speedLimit/vision/density/risk.");
+				}
+			}
+		}
+		else {
+			statPrinter();
+			runWorld(); // run once normally
+		}
+		
 	}
 
 }
