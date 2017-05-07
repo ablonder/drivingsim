@@ -10,6 +10,9 @@ import java.util.Random;
 
 public class World {
 
+	public static drawGrid screen;
+	public int frameRate = 180; // rate it changes in milliseconds
+
 	static int numRuns = 200;
 	static int speedLimit = 3; // minimum speed, cars will travel anywhere from
 	// 1 to
@@ -29,27 +32,31 @@ public class World {
 	// have occured in the
 	// last tick
 
-	public static int humans = 0;
-	public static int aggressives = 0;
-	public static int agents = 0;
+	public static int humans = 0;		//proportion of human drivers
+	public static int aggressives = 0;	//proportion of aggressive drivers
+	public static int agents = 0;		//proportion of agent drivers
+	public static int humanCount = 0; // total number of human drivers created
+	public static int aggressiveCount = 0; // total number of aggressive drivers
+											// created
+	public static int agentCount = 0; // total number of agent drivers created
+	public static int carCount = 0; // total number of cars created
 	ArrayList<Car> cars = new ArrayList<Car>();
-	ArrayList<Car> humanCars = new ArrayList<Car>();
-	ArrayList<Car> aggressiveCars = new ArrayList<Car>();
-	ArrayList<Car> agentCars = new ArrayList<Car>();
-
-	public static drawGrid screen;
-	public int frameRate = 200; // rate it changes in milliseconds
 	
 	int step = 0; // the number of ticks that have passed so far in the
 					// simulation for use in calculating speed
 	int crashcount; // the number of car crashes that have occurred
+	static int humanCrashes = 0;
+	static int aggressiveCrashes = 0;
+	static int agentCrashes = 0;
 	int goals; // the number of cars that have reached their goal
+	static int humanGoals = 0;
+	static int aggressiveGoals = 0;
+	static int agentGoals = 0;
 	int numExits = 3; // the number of exit per side
 	public static int numLanes;
 	public static int numCols;
 
 	Random random = new Random();
-
 
 	/*
 	 * Constructor that creates all roadSquares and randomly sets exits
@@ -178,6 +185,8 @@ public class World {
 	private void initializeCars() {
 		Random rand = new Random();
 		float draw;
+		int draw2;
+		Car car;
 		int exitDraw;
 		for (int lane = 0; lane < numLanes; lane++) {
 			draw = rand.nextFloat();
@@ -187,19 +196,30 @@ public class World {
 			if (draw < carDensity) {
 				exitDraw = rand.nextInt(exits.size()); // random exit index
 				int speed = rand.nextInt(speedLimit) + 1;
-<<<<<<< HEAD
-				Car car = new Car(road.get(lane).get(0), exits.get(exitDraw), speed, risk, varrisk, vision, this);
-=======
-				Car car = new Car(road.get(lane).get(0), exits.get(exitDraw), speed, 1, true, vision, this);
->>>>>>> 50a47a759259f8e0f7bcef1589e5a8aa570dc605
+
+				draw2 = rand.nextInt(10) + 1;
+				if (draw2 <= humans) {									//human car
+					car = intializeHuman(road.get(lane).get(0), exits.get(exitDraw), speed);
+					humanCount++;
+				} else if (draw2 <= humans + aggressives) {				//aggressive car
+					car = initializeAggressive(road.get(lane).get(0), exits.get(exitDraw));
+					aggressiveCount++;
+				} else if (draw2 <= humans + aggressives + agents) {	//agent car
+					car = initializeAgent(road.get(lane).get(0), exits.get(exitDraw));
+					agentCount++;
+				} else {												//default car
+					car = new Car(road.get(lane).get(0), exits.get(exitDraw), "DEFAULT", speed, risk, varrisk, vision,
+							this);
+				}
 				road.get(lane).get(0).car = car;
 				cars.add(car);
+				carCount++;
 			}
 		}
 	}
 	
 	/**
-	 * Initializes car of type human
+	 * Initializes car of profile human
 	 * 
 	 * @param initsq
 	 * @param goalsq
@@ -210,7 +230,37 @@ public class World {
 		int thisRisk = 2;
 		boolean thisVarrisk = true;
 		float thisVision = (float) 0.9;
-		return new Car(initsq, goalsq, speed, thisRisk, thisVarrisk, thisVision, this);
+		return new Car(initsq, goalsq, "HUMAN", speed, thisRisk, thisVarrisk, thisVision, this);
+	}
+
+	/**
+	 * Initializes a car of profile aggressive
+	 * 
+	 * @param initsq
+	 * @param goalsq
+	 * @return Car
+	 */
+	public Car initializeAggressive(roadSquare initsq, roadSquare goalsq) {
+		int thisSpeed = 1;
+		int thisRisk = 0;
+		boolean thisVarrisk = true; // not significant cus already max risky
+		float thisVision = (float) 0.8;
+		return new Car(initsq, goalsq, "AGGRESSIVE", thisSpeed, thisRisk, thisVarrisk, thisVision, this);
+	}
+
+	/**
+	 * Initializes a car of profile agent
+	 * 
+	 * @param initsq
+	 * @param goalsq
+	 * @return Car
+	 */
+	public Car initializeAgent(roadSquare initsq, roadSquare goalsq) {
+		int thisSpeed = 2;
+		int thisRisk = 3;
+		boolean thisVarrisk = false;
+		float thisVision = (float) 1;
+		return new Car(initsq, goalsq, "AGENT", thisSpeed, thisRisk, thisVarrisk, thisVision, this);
 	}
 
 	/*
@@ -262,7 +312,43 @@ public class World {
 							cont = false;
 							newcars.remove(car);
 							goals++;
+							switch (car.type) {
+							case "HUMAN":
+								humanGoals++;
+								break;
+							case "AGGRESSIVE":
+								aggressiveGoals++;
+								break;
+							case "AGENT":
+								agentGoals++;
+								break;
+							}
 						} else if(result.equals("CRASH")){
+
+							/* Counts for car that DOESN'T cause the crash */
+							switch (newsq.car.type) {
+							case "HUMAN":
+								humanCrashes++;
+								break;
+							case "AGGRESSIVE":
+								aggressiveCrashes++;
+								break;
+							case "AGENT":
+								agentCrashes++;
+								break;
+							}
+							/* Counts for car that CAUSES the crashes */
+							switch (car.type) {
+							case "HUMAN":
+								humanCrashes++;
+								break;
+							case "AGGRESSIVE":
+								aggressiveCrashes++;
+								break;
+							case "AGENT":
+								agentCrashes++;
+								break;
+							}
 							cont = false;
 							newcars.remove(car);
 							newcars.remove(newsq.car);
@@ -301,9 +387,21 @@ public class World {
 			// System.out.printf("t= %d\n", t);
 			world.tick();
 		}
-		System.out.println("Step: " + world.step);
-		System.out.println("Crashes: " + world.crashcount);
-		System.out.println("Goals: " + world.goals);
+		System.out.println("Steps: " + world.step);
+		System.out.println("Total Cars: " + world.carCount);
+		System.out.println("Total Crashes: " + world.crashcount);
+		System.out.println("Total Goals: " + world.goals);
+		
+		/* If we are comparing profiles */
+		if (humans > 0 || aggressives > 0 || agents > 0) {
+			System.out.printf("\t\t\tHumans\tAggres\tAgents\n");
+			System.out.printf("Cars:\t\t\t%d\t%d\t%d\n", humanCount, aggressiveCount, agentCount);
+			System.out.printf("Percent crashed:\t%.2f\t%.2f\t%.2f\n", (float) humanCrashes / (float) humanCount,
+					(float) aggressiveCrashes / (float) aggressiveCount, (float) agentCrashes / (float) agentCount);
+			System.out.printf("Percent exitted:\t%.2f\t%.2f\t%.2f\n", (float) humanGoals / (float) humanCount,
+					(float) aggressiveGoals / (float) aggressiveCount, (float) agentGoals / (float) agentCount);
+		}
+
 		System.out.println("\n----------------\n");
 	}
 
@@ -335,60 +433,75 @@ public class World {
 	 */
 	public static void main(String[] args){
 		if (args.length > 0) { // if we have params
+			statPrinter();
+			int length = args.length;
 
 			/* Checking first param for numRuns */
 			if (args[0].matches("[0-9]+")) {
 				numRuns = Integer.parseInt(args[0]);
-				for (int i = 0; i < args.length; i++) { // shift one back
-					System.out.println("i= " + i);
-					args[i] = args[i - 1];
+				for (int i = 0; i < args.length - 1; i++) { // shift one back
+					args[i] = args[i + 1];
+				}
+				if (args.length > 1) {
+					length--;
 				}
 			}
 			
 			/* Checking to see if we want to compare preset profiles */
 			if (args[0].equalsIgnoreCase("profile")) {
-				if (args.length == 3) {
+				if (length == 4) {
 					if (args[1].matches("[0-9]|10")) {
 						humans = Integer.parseInt(args[1]);
 					} else {
-						System.out.println("Improper human percentage entered: int 0-10");
+						System.out.println("Improper human percentage entered: enter int 0-10");
 					}
 
 					if (args[2].matches("[0-9]|10")) {
-						aggressives = Integer.parseInt(args[1]);
+						aggressives = Integer.parseInt(args[2]);
 					} else {
-						System.out.println("Aggressives human percentage entered: int 0-10");
+						System.out.println("Improper aggressive percentage entered: enter int 0-10");
 					}
 
 					if (args[3].matches("[0-9]|10")) {
-						agents = Integer.parseInt(args[1]);
+						agents = Integer.parseInt(args[3]);
 					} else {
-						System.out.println("Agents human percentage entered: int 0-10");
+						System.out.println("Improper agent percentage entered: enter int 0-10");
+					}
+
+					if (humans + aggressives + agents <= 10) {
+						// print statements
+						runWorld();
+					} else {
+						System.out.println("Humans + aggressives + agents must be less than or equal to 10");
 					}
 				} else {
 					System.out.println("Enter int (humans), int (aggressives), int (agents)");
 				}
 			}
-			else if (args.length == 1 && !args[0].toLowerCase().equals("varrisk")) {
+
+			/* Random one arg entered in */
+			else if (length == 1 && !args[0].toLowerCase().equals("varrisk")) {
 				runWorld();
 			}
+
+			/* Analysis of one variable */
 			else {
 				System.out.println("Singe variable avalysis\n");
-				statPrinter();
 				switch (args[0].toLowerCase()) {
 				case "speedlimit":
-					for (int i = 1; i < args.length; i++) {
+					for (int i = 1; i < length; i++) {
 						if (!args[i].matches("[0-9]+")) {
 							System.out.printf("Improper argument %s\n", args[i]);
 							continue;
 						}
+						System.out.printf("args[%d] = %s\n", i, args[i]);
 						speedLimit = Integer.parseInt(args[i]);
 						System.out.println("SpeedLimit test " + i + ": speedLimit = " + speedLimit);
 						runWorld();
 					}
 					break;
 				case "vision":
-					for (int i = 1; i < args.length; i++) {
+					for (int i = 1; i < length; i++) {
 						if (!args[i].matches("[0-9]+")) {
 							System.out.printf("Improper argument %s\n", args[i]);
 							continue;
@@ -400,7 +513,7 @@ public class World {
 					}
 					break;
 				case "density":
-					for (int i = 1; i < args.length; i++) {
+					for (int i = 1; i < length; i++) {
 						if (!args[i].matches("[0-9]+")) {
 							System.out.printf("Improper argument %s\n", args[i]);
 							continue;
@@ -412,7 +525,7 @@ public class World {
 					}
 					break;
 				case "risk":
-					for (int i = 1; i < args.length; i++) {
+					for (int i = 1; i < length; i++) {
 						if (!args[i].matches("[0-9]+")) {
 							System.out.printf("Improper argument %s\n", args[i]);
 							continue;

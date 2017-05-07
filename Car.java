@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Random;
 
 /*
  * Cars in the simulator.
@@ -25,20 +24,34 @@ public class Car {
 	final float visibility;
 	// the car's current location
 	roadSquare location;
+	String type; // either "DEFAULT", "HUMAN", "AGGRESSIVE", or "AGENET"
 	
 	/*
 	 * Constructor for a new car to initialize class variables
 	 * 
 	 * @param roadSquare initsq - the roadSqare the car starts at
-	 * @param roadSquare goalsq - the exit the car is trying to get to
-	 * @param int initspeed - the number of ticks it takes for the car to move one square
-	 * @param int risk - amoung a car is willing to deviate from their base speed (if not overwritten)
-	 * @param boolen varrisk - does the car's tendency to take risks vary as it approaches its exit
-	 * @param float vision - the proportion of the time the car notices something in its blind spot
-	 * @param World w - the world that the car is in
 	 * 
+	 * @param roadSquare goalsq - the exit the car is trying to get to
+	 * 
+	 * @param String type - what profile of car we're dealing with
+	 * 
+	 * @param int initspeed - the number of ticks it takes for the car to move
+	 * one square
+	 * 
+	 * @param int risk - amoung a car is willing to deviate from their basespeed
+	 * (if not overwritten)
+	 * 
+	 * @param boolen varrisk - does the car's tendency to take risks vary as it
+	 * approaches its exit
+	 * 
+	 * @param float vision - the proportion of the time the car notices
+	 * something in its blind spot
+	 * 
+	 * @param World w - the world that the car is in
 	 */
-	public Car(roadSquare initsq, roadSquare goalsq, int initspeed, int risk, boolean varrisk, float vision, World w){
+	public Car(roadSquare initsq, roadSquare goalsq, String type, int initspeed, int risk, boolean varrisk,
+			float vision, World w) {
+		this.type = type;
 		world = w;
 		goal = goalsq;
 		basespeed = initspeed;
