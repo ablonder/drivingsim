@@ -97,7 +97,18 @@ public class drawGrid {
 	                    cellMatrix[row-1][col] = cellPane;
 //                      cellMatrix[row][col].setBackground(Color.BLUE);
 	                    if(World.road.get(row-1).get(col).car != null){
-	                    	cellPane.setBackground(Color.BLUE);                 
+	                    	if(World.road.get(row-1).get(col).car.type == "HUMAN"){
+	                    	cellPane.setBackground(Color.MAGENTA);  
+	                    	}
+	                    	else if(World.road.get(row-1).get(col).car.type == "AGGRESSIVE"){
+		                    cellPane.setBackground(Color.ORANGE);  
+	                    	}
+	                    	else if(World.road.get(row-1).get(col).car.type == "AGENT"){
+	                    		cellPane.setBackground(Color.BLACK);
+	                    	}
+	                    	else{
+	                    		cellPane.setBackground(Color.BLUE);
+	                    	}
                     }
 	                  
                     else{
