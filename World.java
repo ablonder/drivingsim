@@ -11,7 +11,7 @@ import java.util.Random;
 public class World {
 
 	public static drawGrid screen;
-	public int frameRate = 180; // rate it changes in milliseconds
+	public int frameRate = 300; // rate it changes in milliseconds
 
 	static int numRuns = 200;
 	static int speedLimit = 3; // minimum speed, cars will travel anywhere from
