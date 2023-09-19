@@ -11,19 +11,22 @@ import java.util.Random;
 public class World {
 
 	public static drawGrid screen;
+<<<<<<< HEAD
 	public int frameRate = 400; // rate it changes in milliseconds
+=======
+	public static int frameRate = 200; // rate it changes in milliseconds
+>>>>>>> 05c99f8ab6f6b92d6c6c8904784d7b27fdcdc032
 
-	static int numRuns = 200;
-	static int speedLimit = 5; // minimum speed, cars will travel anywhere from
+	static int numRuns = 1000;
+	static int speedLimit = 3; // minimum speed, cars will travel anywhere from
 	// 1 to
 	// speedLimit
 	static float vision = (float) .90; // the proportion of the time the car
 	// notices
 	// something in its blind spot
-	static float carDensity = (float) 0.2; // number of cars per 2 roadSquares
-	static int risk = 1; // the lower the riskier (less inclined to adapt to
-							// traffic)
-	static boolean varrisk = false; // whether cars get riskier as they aproach
+	static float carDensity = (float) 0.3; // number of cars per 1 roadSquare
+	static int risk = 1;
+	static boolean varrisk = true; // whether cars get riskier as they aproach
 									// exit
 
 	public ArrayList<roadSquare> exits = new ArrayList<roadSquare>();
@@ -387,6 +390,7 @@ public class World {
 			// System.out.printf("t= %d\n", t);
 			world.tick();
 		}
+
 		System.out.println("Steps: " + world.step);
 		System.out.println("Total Cars: " + world.carCount);
 		System.out.println("Total Crashes: " + world.crashcount);
@@ -409,7 +413,8 @@ public class World {
 	 * Prints out the stats like speedLimit before the game
 	 */
 	public static void statPrinter() {
-		System.out.println("Base stats: ");
+		System.out.println("Default stats: ");
+		System.out.println("Framerate: " + frameRate);
 		System.out.printf("numRuns= %d\n", numRuns);
 		System.out.printf("speedLimit= %d\n", speedLimit);
 		System.out.printf("vision= %.2f\n", vision);
@@ -428,12 +433,15 @@ public class World {
 	 * 
 	 *            note: vision/density should be in int form to be divided by
 	 *            100
+	 * 
+	 *            profile mode: type "profile" for argument 1, and then 3 ints
+	 *            from 0-10 which sum to 10 or less. Each int represents the
+	 *            proportion of human, aggressive, and agent cars, respectively.
 	 * @tests speedLimit, vision, density, and risk
 	 * @TODO risk method
 	 */
 	public static void main(String[] args){
 		if (args.length > 0) { // if we have params
-			statPrinter();
 			int length = args.length;
 
 			/* Checking first param for numRuns */
@@ -446,6 +454,8 @@ public class World {
 					length--;
 				}
 			}
+			statPrinter();
+			carDensity *= 2; // because we're only adding every other step
 			
 			/* Checking to see if we want to compare preset profiles */
 			if (args[0].equalsIgnoreCase("profile")) {
@@ -512,15 +522,16 @@ public class World {
 						runWorld();
 					}
 					break;
-				case "density":
+				case "cardensity":
 					for (int i = 1; i < length; i++) {
 						if (!args[i].matches("[0-9]+")) {
 							System.out.printf("Improper argument %s\n", args[i]);
 							continue;
 						}
 						carDensity = (float) Integer.parseInt(args[i]);
-						carDensity /= 100;
-						System.out.println("carDensity test " + i + ": carDensity = " + carDensity);
+						carDensity = carDensity / 100 * 2; // to get percent for
+															// every other step
+						System.out.println("carDensity test " + i + ": carDensity = " + carDensity / 2);
 						runWorld();
 					}
 					break;
