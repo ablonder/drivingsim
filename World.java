@@ -14,7 +14,7 @@ public class World {
 	public int frameRate = 400; // rate it changes in milliseconds
 
 	static int numRuns = 200;
-	static int speedLimit = 3; // minimum speed, cars will travel anywhere from
+	static int speedLimit = 5; // minimum speed, cars will travel anywhere from
 	// 1 to
 	// speedLimit
 	static float vision = (float) .90; // the proportion of the time the car

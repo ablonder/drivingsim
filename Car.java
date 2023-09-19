@@ -24,7 +24,7 @@ public class Car {
 	final float visibility;
 	// the car's current location
 	roadSquare location;
-	String type; // either "DEFAULT", "HUMAN", "AGGRESSIVE", or "AGENET"
+	String type; // either "DEFAULT", "HUMAN", "AGGRESSIVE", or "AGENT"
 	
 	/*
 	 * Constructor for a new car to initialize class variables
